@@ -9,7 +9,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func Connect() *gorm.DB {
+var PotsgresDB *gorm.DB
+
+func Connect() {
 	var err error
 
 	config := config.GetConfig()
@@ -33,5 +35,5 @@ func Connect() *gorm.DB {
 	DB.AutoMigrate(model.Category{})
 	fmt.Println("migrated schemas!")
 
-	return DB
+	PotsgresDB = DB
 }
