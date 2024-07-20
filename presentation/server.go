@@ -3,8 +3,6 @@ package presentation
 import (
 	"fmt"
 	"log"
-	"paywatcher/database"
-	userinfrastructure "paywatcher/infrastructure/user-infrastructure"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,14 +14,11 @@ type Server struct {
 
 func (s *Server) Start() {
 
-	userDatasource := &userinfrastructure.UserDatasource{DB: database.PotsgresDB}
-	userinfrastructure.NewUserRepository(userDatasource)
-
 	addr := fmt.Sprintf("%s:%d", s.Host, s.Port)
 	app := fiber.New()
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
+
+	router := AppRouter{app: app}
+	router.Init()
 
 	if err := app.Listen(addr); err != nil {
 		log.Fatal(err)

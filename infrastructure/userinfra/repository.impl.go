@@ -1,8 +1,10 @@
-package userinfrastructure
+package userinfra
 
 import (
 	"paywatcher/database/model"
-	userdomain "paywatcher/domain/user-domain"
+	"paywatcher/domain/userdomain"
+
+	"github.com/google/uuid"
 )
 
 type UserRepositoryImpl struct {
@@ -15,6 +17,12 @@ func NewUserRepository(datasource userdomain.UserDatasource) *UserRepositoryImpl
 	}
 }
 
+// GetUserById implements userdomain.UserRepository.
+func (r *UserRepositoryImpl) GetUserById(id uuid.UUID) (*model.User, error) {
+	panic("unimplemented")
+}
+
+// GetUserByEmail implements userdomain.UserRepository.
 func (r *UserRepositoryImpl) GetUserByEmail(email string) (*model.User, error) {
 	panic("unimplemented")
 }
