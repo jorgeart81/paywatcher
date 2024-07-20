@@ -16,7 +16,7 @@ func (appRouter *AppRouter) Init() {
 	app := appRouter.app
 	api := app.Group("/api")
 
-	userDatasource := &userinfra.UserDatasource{DB: database.PotsgresDB}
+	userDatasource := &userinfra.PostgresUserDatasrc{DB: database.PotsgresDB}
 	userRepositoryImpl := userinfra.NewUserRepository(userDatasource)
 	userController := userctrl.NewUserController(userRepositoryImpl)
 

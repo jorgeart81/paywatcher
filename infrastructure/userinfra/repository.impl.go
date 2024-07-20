@@ -7,22 +7,29 @@ import (
 	"github.com/google/uuid"
 )
 
+// var _ userdomain.UserRepository = &UserRepositoryImpl{}
+
 type UserRepositoryImpl struct {
 	Datasource userdomain.UserDatasource
 }
 
-func NewUserRepository(datasource userdomain.UserDatasource) *UserRepositoryImpl {
-	return &UserRepositoryImpl{
-		Datasource: datasource,
-	}
+var userRepository *UserRepositoryImpl
+
+// GetUserByEmail implements userdomain.UserRepository.
+func (u *UserRepositoryImpl) GetUserByEmail(email string) (*model.User, error) {
+	panic("unimplemented")
 }
 
 // GetUserById implements userdomain.UserRepository.
-func (r *UserRepositoryImpl) GetUserById(id uuid.UUID) (*model.User, error) {
+func (u *UserRepositoryImpl) GetUserById(id uuid.UUID) (*model.User, error) {
 	panic("unimplemented")
 }
 
-// GetUserByEmail implements userdomain.UserRepository.
-func (r *UserRepositoryImpl) GetUserByEmail(email string) (*model.User, error) {
-	panic("unimplemented")
+func NewUserRepository(datasource userdomain.UserDatasource) *UserRepositoryImpl {
+	if userRepository == nil {
+		userRepository = &UserRepositoryImpl{
+			Datasource: datasource,
+		}
+	}
+	return userRepository
 }

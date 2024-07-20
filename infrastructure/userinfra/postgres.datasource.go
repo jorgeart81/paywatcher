@@ -9,13 +9,16 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserDatasource struct {
+// var _ userdomain.UserDatasource = &PostgresUserDatasrc{}
+
+type PostgresUserDatasrc struct {
 	DB *gorm.DB
 }
 
-func (datasource *UserDatasource) GetUserById(id uuid.UUID) (*model.User, error) {
+// GetUserById implements userdomain.UserDatasource.
+func (u *PostgresUserDatasrc) GetUserById(id uuid.UUID) (*model.User, error) {
 	var user model.User
-	db := datasource.DB
+	db := u.DB
 
 	err := db.Find(&user, "id = ?", id).Error
 
@@ -29,6 +32,8 @@ func (datasource *UserDatasource) GetUserById(id uuid.UUID) (*model.User, error)
 	return &user, nil
 }
 
-func (datasource *UserDatasource) GetUserByEmail(email string) (*model.User, error) {
+// GetUserByEmail implements userdomain.UserDatasource.
+func (u *PostgresUserDatasrc) GetUserByEmail(email string) (*model.User, error) {
 	panic("unimplemented")
+
 }
