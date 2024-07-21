@@ -1,7 +1,6 @@
 package userinfra
 
 import (
-	"paywatcher/database/model"
 	"paywatcher/domain/userdomain"
 
 	"github.com/google/uuid"
@@ -15,16 +14,6 @@ type UserRepositoryImpl struct {
 
 var userRepository *UserRepositoryImpl
 
-// GetUserByEmail implements userdomain.UserRepository.
-func (u *UserRepositoryImpl) GetUserByEmail(email string) (*model.User, error) {
-	panic("unimplemented")
-}
-
-// GetUserById implements userdomain.UserRepository.
-func (u *UserRepositoryImpl) GetUserById(id uuid.UUID) (*model.User, error) {
-	panic("unimplemented")
-}
-
 func NewUserRepository(datasource userdomain.UserDatasource) *UserRepositoryImpl {
 	if userRepository == nil {
 		userRepository = &UserRepositoryImpl{
@@ -32,4 +21,14 @@ func NewUserRepository(datasource userdomain.UserDatasource) *UserRepositoryImpl
 		}
 	}
 	return userRepository
+}
+
+// GetUserByEmail implements userdomain.UserRepository.
+func (u *UserRepositoryImpl) GetUserByEmail(email string) (*userdomain.User, error) {
+	panic("unimplemented")
+}
+
+// GetUserById implements userdomain.UserRepository.
+func (u *UserRepositoryImpl) GetUserById(id uuid.UUID) (*userdomain.User, error) {
+	panic("unimplemented")
 }

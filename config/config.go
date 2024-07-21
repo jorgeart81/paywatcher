@@ -5,18 +5,18 @@ import (
 )
 
 type Config struct {
-	Env *environmentVariables
+	env *environmentVariables
 }
 
-func GetConfig() *Config {
-	var config Config
-
-	envs, err := config.loadEnv()
+func (c *Config) Load() {
+	envs, err := c.loadEnv()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return &Config{
-		Env: envs,
-	}
+	c.env = envs
+}
+
+func (c *Config) GetEnvs() *environmentVariables {
+	return c.env
 }

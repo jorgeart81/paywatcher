@@ -3,7 +3,8 @@ package userinfra
 import (
 	"errors"
 	"fmt"
-	"paywatcher/database/model"
+	"paywatcher/domain/userdomain"
+	"paywatcher/infrastructure/database/model"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -16,8 +17,8 @@ type PostgresUserDatasrc struct {
 }
 
 // GetUserById implements userdomain.UserDatasource.
-func (u *PostgresUserDatasrc) GetUserById(id uuid.UUID) (*model.User, error) {
-	var user model.User
+func (u *PostgresUserDatasrc) GetUserById(id uuid.UUID) (*userdomain.User, error) {
+	var user model.UserEntity
 	db := u.DB
 
 	err := db.Find(&user, "id = ?", id).Error
@@ -29,11 +30,11 @@ func (u *PostgresUserDatasrc) GetUserById(id uuid.UUID) (*model.User, error) {
 		return nil, err
 	}
 
-	return &user, nil
+	return user.ToDomain(), nil
 }
 
 // GetUserByEmail implements userdomain.UserDatasource.
-func (u *PostgresUserDatasrc) GetUserByEmail(email string) (*model.User, error) {
+func (u *PostgresUserDatasrc) GetUserByEmail(email string) (*userdomain.User, error) {
 	panic("unimplemented")
 
 }

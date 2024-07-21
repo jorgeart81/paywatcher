@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type Category struct {
+type CategoryEntity struct {
 	ID        uuid.UUID `json:"id" gorm:"primaryKey;type:uuid"`
 	Name      string    `json:"name"`
 	Priority  uint      `json:"priority"`
