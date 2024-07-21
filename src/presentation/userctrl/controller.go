@@ -1,7 +1,7 @@
 package userctrl
 
 import (
-	"paywatcher/domain/userdomain"
+	"paywatcher/src/domain/userdomain"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"

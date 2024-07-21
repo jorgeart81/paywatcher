@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"paywatcher/config"
-	"paywatcher/infrastructure/database"
-	"paywatcher/presentation"
+	"paywatcher/src/config"
+	"paywatcher/src/infrastructure/database"
+	"paywatcher/src/presentation"
 )
 
 func main() {

@@ -2,7 +2,7 @@ package database
 
 import (
 	"fmt"
-	"paywatcher/infrastructure/database/model"
+	"paywatcher/src/infrastructure/database/model"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

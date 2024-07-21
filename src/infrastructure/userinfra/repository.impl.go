@@ -1,7 +1,7 @@
 package userinfra
 
 import (
-	"paywatcher/domain/userdomain"
+	"paywatcher/src/domain/userdomain"
 
 	"github.com/google/uuid"
 )

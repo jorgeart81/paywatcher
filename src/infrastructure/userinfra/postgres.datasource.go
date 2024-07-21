@@ -3,8 +3,8 @@ package userinfra
 import (
 	"errors"
 	"fmt"
-	"paywatcher/domain/userdomain"
-	"paywatcher/infrastructure/database/model"
+	"paywatcher/src/domain/userdomain"
+	"paywatcher/src/infrastructure/database/model"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

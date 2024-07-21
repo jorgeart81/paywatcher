@@ -1,8 +1,8 @@
 package presentation
 
 import (
-	"paywatcher/infrastructure/userinfra"
-	"paywatcher/presentation/userctrl"
+	"paywatcher/src/infrastructure/userinfra"
+	"paywatcher/src/presentation/userctrl"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"

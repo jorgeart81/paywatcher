@@ -1,7 +1,7 @@
 package model
 
 import (
-	"paywatcher/domain/userdomain"
+	"paywatcher/src/domain/userdomain"
 	"time"
 
 	"github.com/google/uuid"
