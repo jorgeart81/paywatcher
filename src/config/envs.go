@@ -19,6 +19,13 @@ type environmentVariables struct {
 	SSLMODE         string
 	TIMEZONE        string
 	CONNECT_TIMEOUT int
+
+	DOMAIN            string
+	COOKIE_DOMAIN     string
+	JWT_SECRET        string
+	JWT_ISSUER        string
+	JWT_AUDIENCE      string
+	CORS_ALLOW_ORIGIN string
 }
 
 func (c *Config) loadEnv() (*environmentVariables, error) {
@@ -39,6 +46,13 @@ func (c *Config) loadEnv() (*environmentVariables, error) {
 		SSLMODE:         os.Getenv("SSLMODE"),
 		TIMEZONE:        os.Getenv("TIMEZONE"),
 		CONNECT_TIMEOUT: parseInt(os.Getenv("CONNECT_TIMEOUT"), "error parsing CONNECT_TIMEOUT"),
+
+		DOMAIN:            os.Getenv("DOMAIN"),
+		COOKIE_DOMAIN:     os.Getenv("COOKIE_DOMAIN"),
+		JWT_SECRET:        os.Getenv("JWT_SECRET"),
+		JWT_ISSUER:        os.Getenv("JWT_ISSUER"),
+		JWT_AUDIENCE:      os.Getenv("JWT_AUDIENCE"),
+		CORS_ALLOW_ORIGIN: os.Getenv("CORS_ALLOW_ORIGIN"),
 	}
 
 	return envs, nil
