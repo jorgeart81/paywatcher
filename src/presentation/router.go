@@ -14,15 +14,26 @@ type AppRouter struct {
 	db  *gorm.DB
 }
 
+func NewAppRouter(app *fiber.App, db *gorm.DB) *AppRouter {
+	return &AppRouter{app: app, db: db}
+}
+
 func (appRouter *AppRouter) Init() {
 	app := appRouter.app
 	api := app.Group("/api")
 
-	userDatasource := &userinfra.PostgresUserDatasrc{DB: appRouter.db}
-	userRepositoryImpl := userinfra.NewUserRepository(userDatasource)
-	createUserUC := usecases.NewCreateUserUseCase(userRepositoryImpl)
-	userController := userctrl.NewUserController(*createUserUC)
+	userController := initUserController(appRouter.db)
 
 	api.Get("/", userController.Index)
 	api.Post("/user", userController.Create)
+}
+
+func initUserController(db *gorm.DB) *userctrl.UserController {
+	// Create datasource, repository and use case
+	userDatasource := &userinfra.PostgresUserDatasrc{DB: db}
+	userRepository := userinfra.NewUserRepository(userDatasource)
+	createUserUC := usecases.NewCreateUserUseCase(userRepository)
+
+	// Create and return the controller
+	return userctrl.NewUserController(*createUserUC)
 }

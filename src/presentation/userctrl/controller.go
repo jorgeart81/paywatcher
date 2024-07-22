@@ -3,6 +3,7 @@ package userctrl
 import (
 	"paywatcher/src/application/usecases"
 	"paywatcher/src/domain/userdomain"
+	"paywatcher/src/presentation/response"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -19,16 +20,21 @@ func NewUserController(createUserUC usecases.CreateUserUseCase) *UserController 
 
 func (c UserController) Create(ctx *fiber.Ctx) error {
 	var user userdomain.User
+	var resp response.Generic
+
 	if err := ctx.BodyParser(&user); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "invalid request"})
+		resp.Message = "invalid request"
+		return ctx.Status(fiber.StatusBadRequest).JSON(resp.Err())
 	}
 
 	newUser, err := c.createUserUC.Execute(user)
 	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": err.Error()})
+		resp.Message = err.Error()
+		return ctx.Status(fiber.StatusBadRequest).JSON(resp.Err())
 	}
 
-	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "ok", "data": newUser})
+	resp.Data = newUser
+	return ctx.Status(fiber.StatusCreated).JSON(resp.Ok())
 }
 
 // func (c *UserController) GetUserById(ctx *fiber.Ctx) error {

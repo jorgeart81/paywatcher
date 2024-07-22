@@ -20,9 +20,8 @@ type PostgresUserDatasrc struct {
 func (pu *PostgresUserDatasrc) Save(user userdomain.User) (*userdomain.User, error) {
 	db := pu.DB
 	userEntity := model.ToUserEntity(&user)
-	fmt.Print(userEntity)
-	err := db.Save(&userEntity).Error
-	if err != nil {
+
+	if err := db.Save(&userEntity).Error; err != nil {
 		if errors.Is(err, gorm.ErrRegistered) {
 			return nil, fmt.Errorf("user could not be created")
 		}
@@ -37,8 +36,7 @@ func (pu *PostgresUserDatasrc) GetUserById(id uuid.UUID) (*userdomain.User, erro
 	var userEntity model.User
 	db := pu.DB
 
-	err := db.Find(&userEntity, "id = ?", id).Error
-	if err != nil {
+	if err := db.Find(&userEntity, "id = ?", id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, fmt.Errorf("user with ID %s not found", id)
 		}
@@ -53,8 +51,7 @@ func (pu *PostgresUserDatasrc) GetUserByEmail(email string) (*userdomain.User, e
 	var userEntity model.User
 	db := pu.DB
 
-	err := db.Find(&userEntity, "email = ?", email).Error
-	if err != nil {
+	if err := db.Find(&userEntity, "email = ?", email).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, fmt.Errorf("user with email %s not found", email)
 		}
