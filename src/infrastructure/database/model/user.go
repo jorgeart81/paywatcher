@@ -9,20 +9,18 @@ import (
 
 type User struct {
 	ID        uuid.UUID `json:"id" gorm:"primaryKey;type:uuid"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email" gorm:"unique"`
-	Username  string    `json:"username"`
-	Password  string    `json:"password"`
-	CreatedAt time.Time `json:"-"`
-	UpdatedAt time.Time `json:"-"`
+	Email     string    `gorm:"column:email;unique"`
+	Username  string    `gorm:"column:username"`
+	Password  string    `gorm:"column:password"`
+	CreatedAt time.Time `gorm:"column:created_at"`
+	UpdatedAt time.Time `gorm:"column:updated_at"`
 }
 
 func ToUserEntity(user *userdomain.User) *User {
 	return &User{
 		ID:       user.ID,
-		Name:     user.Name,
-		Email:    user.Email,
 		Username: user.Username,
+		Email:    user.Email,
 		Password: user.Password,
 	}
 }
@@ -30,9 +28,8 @@ func ToUserEntity(user *userdomain.User) *User {
 func (e *User) ToDomain() *userdomain.User {
 	return &userdomain.User{
 		ID:       e.ID,
-		Name:     e.Name,
-		Email:    e.Email,
 		Username: e.Username,
+		Email:    e.Email,
 		Password: e.Password,
 	}
 }

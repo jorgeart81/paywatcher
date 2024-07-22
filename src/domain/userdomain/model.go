@@ -3,12 +3,11 @@ package userdomain
 import "github.com/google/uuid"
 
 type User struct {
-	ID       uuid.UUID
-	Name     string
-	Email    string
-	Username string
-	Password string
-	Role     []Role
+	ID       uuid.UUID `json:"id"`
+	Email    string    `json:"email"`
+	Username string    `json:"username"`
+	Password string    `json:"password"`
+	Role     []Role    `json:"role"`
 }
 type Role string
 
@@ -22,7 +21,6 @@ var AllRoles = []Role{AdminRole, UserRole}
 func (u *User) NewUser() *User {
 	return &User{
 		ID:       uuid.New(),
-		Name:     u.Name,
 		Email:    u.Email,
 		Username: u.Username,
 		Password: u.Password,
