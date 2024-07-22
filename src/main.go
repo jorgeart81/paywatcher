@@ -8,9 +8,9 @@ import (
 )
 
 func main() {
-	var config config.Config
-	config.Load()
-	env := config.GetEnvs()
+	var conf config.Config
+	conf.Load()
+	env := config.Envs
 
 	// Connect to database
 	var postgresDB database.PotsgresDB

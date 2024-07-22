@@ -9,12 +9,14 @@ import (
 )
 
 type UserController struct {
-	createUserUC *usecases.CreateUserUseCase
+	createUC *usecases.CreateUserUseCase
+	loginUC  *usecases.LoginUserUseCase
 }
 
-func NewUserController(createUserUC usecases.CreateUserUseCase) *UserController {
+func NewUserController(createUserUC usecases.CreateUserUseCase, loginUserUC usecases.LoginUserUseCase) *UserController {
 	return &UserController{
-		createUserUC: &createUserUC,
+		createUC: &createUserUC,
+		loginUC:  &loginUserUC,
 	}
 }
 
@@ -27,7 +29,7 @@ func (c UserController) Create(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(resp.Err())
 	}
 
-	newUser, err := c.createUserUC.Execute(user)
+	newUser, err := c.createUC.Execute(user)
 	if err != nil {
 		resp.Message = err.Error()
 		return ctx.Status(fiber.StatusBadRequest).JSON(resp.Err())
@@ -35,6 +37,26 @@ func (c UserController) Create(ctx *fiber.Ctx) error {
 
 	resp.Data = newUser
 	return ctx.Status(fiber.StatusCreated).JSON(resp.Ok())
+}
+
+func (c UserController) Login(ctx *fiber.Ctx) error {
+	var user userdomain.User
+	var resp response.Generic
+
+	if err := ctx.BodyParser(&user); err != nil {
+		resp.Message = "invalid request"
+		return ctx.Status(fiber.StatusBadRequest).JSON(resp.Err())
+	}
+
+	u, token, err := c.loginUC.Execute(user.Email, user.Password)
+	if err != nil {
+		resp.Message = err.Error()
+		return ctx.Status(fiber.StatusBadRequest).JSON(resp.Err())
+	}
+
+	resp.Data = u
+	resp.Token = token
+	return ctx.Status(fiber.StatusOK).JSON(resp.Ok())
 }
 
 // func (c *UserController) GetUserById(ctx *fiber.Ctx) error {

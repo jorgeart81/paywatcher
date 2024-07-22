@@ -3,21 +3,24 @@ package usecases
 import (
 	"errors"
 	"paywatcher/src/domain/userdomain"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type CreateUserUseCase struct {
-	userRepository userdomain.UserRepository
+	userRepo userdomain.UserRepository
 }
 
-func NewCreateUserUseCase(userRepository userdomain.UserRepository) *CreateUserUseCase {
+func NewCreateUserUseCase(userRepo userdomain.UserRepository) *CreateUserUseCase {
 	return &CreateUserUseCase{
-		userRepository: userRepository,
+		userRepo: userRepo,
 	}
 }
 
 func (uc *CreateUserUseCase) Execute(user userdomain.User) (*userdomain.User, error) {
-	repo := uc.userRepository
+	repo := uc.userRepo
 
+	// Search if the user exists
 	u, err := repo.GetUserByEmail(user.Email)
 	if err != nil {
 		return nil, err
@@ -25,6 +28,14 @@ func (uc *CreateUserUseCase) Execute(user userdomain.User) (*userdomain.User, er
 		return nil, errors.New("user already exists")
 	}
 
+	// Hash the password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, err
+	}
+	user.Password = string(hashedPassword)
+
+	// Save user
 	newUser, err := repo.Save(*user.NewUser())
 	if err != nil {
 		return nil, err
