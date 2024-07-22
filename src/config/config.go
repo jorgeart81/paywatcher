@@ -4,9 +4,9 @@ import (
 	"log"
 )
 
-type Config struct {
-	env *environmentVariables
-}
+type Config struct{}
+
+var Envs *environmentVariables
 
 func (c *Config) Load() {
 	envs, err := c.loadEnv()
@@ -14,9 +14,5 @@ func (c *Config) Load() {
 		log.Fatal(err)
 	}
 
-	c.env = envs
-}
-
-func (c *Config) GetEnvs() *environmentVariables {
-	return c.env
+	Envs = envs
 }
