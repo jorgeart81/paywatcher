@@ -10,12 +10,12 @@ type User struct {
 	Password string
 }
 
-func NewUser(name, email, username, password string) *User {
+func (u *User) NewUser() *User {
 	return &User{
 		ID:       uuid.New(),
-		Name:     name,
-		Email:    email,
-		Username: username,
-		Password: password,
+		Name:     u.Name,
+		Email:    u.Email,
+		Username: u.Username,
+		Password: u.Password,
 	}
 }

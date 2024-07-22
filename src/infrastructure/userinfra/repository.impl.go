@@ -23,12 +23,17 @@ func NewUserRepository(datasource userdomain.UserDatasource) *UserRepositoryImpl
 	return userRepository
 }
 
-// GetUserByEmail implements userdomain.UserRepository.
-func (u *UserRepositoryImpl) GetUserByEmail(email string) (*userdomain.User, error) {
-	panic("unimplemented")
+// Save implements userdomain.UserRepository.
+func (u *UserRepositoryImpl) Save(user userdomain.User) (*userdomain.User, error) {
+	return u.Datasource.Save(user)
 }
 
 // GetUserById implements userdomain.UserRepository.
 func (u *UserRepositoryImpl) GetUserById(id uuid.UUID) (*userdomain.User, error) {
-	panic("unimplemented")
+	return u.Datasource.GetUserById(id)
+}
+
+// GetUserByEmail implements userdomain.UserRepository.
+func (u *UserRepositoryImpl) GetUserByEmail(email string) (*userdomain.User, error) {
+	return u.Datasource.GetUserByEmail(email)
 }

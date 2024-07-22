@@ -16,13 +16,28 @@ type PostgresUserDatasrc struct {
 	DB *gorm.DB
 }
 
+// Save implements userdomain.UserDatasource.
+func (pu *PostgresUserDatasrc) Save(user userdomain.User) (*userdomain.User, error) {
+	db := pu.DB
+	userEntity := model.ToUserEntity(&user)
+
+	err := db.Save(&userEntity).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRegistered) {
+			return nil, fmt.Errorf("user could not be created")
+		}
+		return nil, err
+	}
+
+	return userEntity.ToDomain(), nil
+}
+
 // GetUserById implements userdomain.UserDatasource.
-func (u *PostgresUserDatasrc) GetUserById(id uuid.UUID) (*userdomain.User, error) {
-	var user model.UserEntity
-	db := u.DB
+func (pu *PostgresUserDatasrc) GetUserById(id uuid.UUID) (*userdomain.User, error) {
+	var userEntity model.UserEntity
+	db := pu.DB
 
-	err := db.Find(&user, "id = ?", id).Error
-
+	err := db.Find(&userEntity, "id = ?", id).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, fmt.Errorf("user with ID %s not found", id)
@@ -30,11 +45,21 @@ func (u *PostgresUserDatasrc) GetUserById(id uuid.UUID) (*userdomain.User, error
 		return nil, err
 	}
 
-	return user.ToDomain(), nil
+	return userEntity.ToDomain(), nil
 }
 
 // GetUserByEmail implements userdomain.UserDatasource.
-func (u *PostgresUserDatasrc) GetUserByEmail(email string) (*userdomain.User, error) {
-	panic("unimplemented")
+func (pu *PostgresUserDatasrc) GetUserByEmail(email string) (*userdomain.User, error) {
+	var userEntity model.UserEntity
+	db := pu.DB
 
+	err := db.Find(&userEntity, "email = ?", email).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, fmt.Errorf("user with email %s not found", email)
+		}
+		return nil, err
+	}
+
+	return userEntity.ToDomain(), nil
 }
