@@ -20,7 +20,7 @@ type PostgresUserDatasrc struct {
 func (pu *PostgresUserDatasrc) Save(user userdomain.User) (*userdomain.User, error) {
 	db := pu.DB
 	userEntity := model.ToUserEntity(&user)
-
+	fmt.Print(userEntity)
 	err := db.Save(&userEntity).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRegistered) {
@@ -34,7 +34,7 @@ func (pu *PostgresUserDatasrc) Save(user userdomain.User) (*userdomain.User, err
 
 // GetUserById implements userdomain.UserDatasource.
 func (pu *PostgresUserDatasrc) GetUserById(id uuid.UUID) (*userdomain.User, error) {
-	var userEntity model.UserEntity
+	var userEntity model.User
 	db := pu.DB
 
 	err := db.Find(&userEntity, "id = ?", id).Error
@@ -50,7 +50,7 @@ func (pu *PostgresUserDatasrc) GetUserById(id uuid.UUID) (*userdomain.User, erro
 
 // GetUserByEmail implements userdomain.UserDatasource.
 func (pu *PostgresUserDatasrc) GetUserByEmail(email string) (*userdomain.User, error) {
-	var userEntity model.UserEntity
+	var userEntity model.User
 	db := pu.DB
 
 	err := db.Find(&userEntity, "email = ?", email).Error

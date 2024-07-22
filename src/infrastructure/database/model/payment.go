@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type PaymentEntity struct {
+type Payment struct {
 	ID          uuid.UUID `json:"id" gorm:"primaryKey;type:uuid"`
 	Name        string    `json:"name"`
 	CategoryID  uuid.UUID `json:"categoryId"`

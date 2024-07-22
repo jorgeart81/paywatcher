@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserEntity struct {
+type User struct {
 	ID        uuid.UUID `json:"id" gorm:"primaryKey;type:uuid"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email" gorm:"unique"`
@@ -17,8 +17,8 @@ type UserEntity struct {
 	UpdatedAt time.Time `json:"-"`
 }
 
-func ToUserEntity(user *userdomain.User) *UserEntity {
-	return &UserEntity{
+func ToUserEntity(user *userdomain.User) *User {
+	return &User{
 		ID:       user.ID,
 		Name:     user.Name,
 		Email:    user.Email,
@@ -27,7 +27,7 @@ func ToUserEntity(user *userdomain.User) *UserEntity {
 	}
 }
 
-func (e *UserEntity) ToDomain() *userdomain.User {
+func (e *User) ToDomain() *userdomain.User {
 	return &userdomain.User{
 		ID:       e.ID,
 		Name:     e.Name,

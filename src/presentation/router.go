@@ -1,6 +1,7 @@
 package presentation
 
 import (
+	"paywatcher/src/application/usecases"
 	"paywatcher/src/infrastructure/userinfra"
 	"paywatcher/src/presentation/userctrl"
 
@@ -19,7 +20,9 @@ func (appRouter *AppRouter) Init() {
 
 	userDatasource := &userinfra.PostgresUserDatasrc{DB: appRouter.db}
 	userRepositoryImpl := userinfra.NewUserRepository(userDatasource)
-	userController := userctrl.NewUserController(userRepositoryImpl)
+	createUserUC := usecases.NewCreateUserUseCase(userRepositoryImpl)
+	userController := userctrl.NewUserController(*createUserUC)
 
 	api.Get("/", userController.Index)
+	api.Post("/user", userController.Create)
 }

@@ -29,9 +29,9 @@ func (p *PotsgresDB) Connect(dsn string) {
 
 	// Schema migration
 	fmt.Println("migrating schemas...")
-	DB.AutoMigrate(model.UserEntity{})
-	DB.AutoMigrate(model.PaymentEntity{})
-	DB.AutoMigrate(model.CategoryEntity{})
+	DB.AutoMigrate(model.User{})
+	DB.AutoMigrate(model.Payment{})
+	DB.AutoMigrate(model.Category{})
 	fmt.Println("migrated schemas!")
 
 	p.db = DB

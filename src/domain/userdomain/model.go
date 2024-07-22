@@ -8,7 +8,16 @@ type User struct {
 	Email    string
 	Username string
 	Password string
+	Role     []Role
 }
+type Role string
+
+const (
+	AdminRole Role = "admin"
+	UserRole  Role = "user"
+)
+
+var AllRoles = []Role{AdminRole, UserRole}
 
 func (u *User) NewUser() *User {
 	return &User{
@@ -17,5 +26,6 @@ func (u *User) NewUser() *User {
 		Email:    u.Email,
 		Username: u.Username,
 		Password: u.Password,
+		Role:     []Role{UserRole},
 	}
 }
