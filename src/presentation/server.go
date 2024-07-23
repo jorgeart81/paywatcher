@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -17,12 +17,12 @@ type Server struct {
 func (s *Server) Start() {
 
 	addr := fmt.Sprintf("%s:%d", s.Host, s.Port)
-	app := fiber.New()
+	app := gin.Default()
 
 	router := NewAppRouter(app, s.DB)
 	router.Init()
 
-	if err := app.Listen(addr); err != nil {
+	if err := app.Run(addr); err != nil {
 		log.Fatal(err)
 	}
 }

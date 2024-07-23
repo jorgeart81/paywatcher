@@ -8,28 +8,30 @@ import (
 	"paywatcher/src/presentation/userctrl"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 type AppRouter struct {
-	app *fiber.App
+	app *gin.Engine
 	db  *gorm.DB
 }
 
-func NewAppRouter(app *fiber.App, db *gorm.DB) *AppRouter {
+func NewAppRouter(app *gin.Engine, db *gorm.DB) *AppRouter {
 	return &AppRouter{app: app, db: db}
 }
 
 func (appRouter *AppRouter) Init() {
-	app := appRouter.app
-	api := app.Group("/api")
+	r := appRouter.app
+	api := r.Group("/api")
 
 	userController := initUserController(appRouter.db)
 
-	api.Get("/", userController.Index)
-	api.Post("/user/create", userController.Create)
-	api.Post("/user/login", userController.Login)
+	{
+		api.GET("/", userController.Index)
+		api.POST("/user/create", userController.Create)
+		api.POST("/user/login", userController.Login)
+	}
 }
 
 func initUserController(db *gorm.DB) *userctrl.UserController {

@@ -1,11 +1,12 @@
 package userctrl
 
 import (
+	"net/http"
 	"paywatcher/src/application/usecases"
 	"paywatcher/src/domain/userdomain"
 	"paywatcher/src/presentation/response"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 )
 
 type UserController struct {
@@ -20,47 +21,51 @@ func NewUserController(createUserUC usecases.CreateUserUseCase, loginUserUC usec
 	}
 }
 
-func (c UserController) Create(ctx *fiber.Ctx) error {
+func (c UserController) Create(ctx *gin.Context) {
 	var user userdomain.User
 	var gResp response.Generic
 
-	if err := ctx.BodyParser(&user); err != nil {
+	if err := ctx.Bind(&user); err != nil {
 		gResp.Message = "invalid request"
-		return ctx.Status(fiber.StatusBadRequest).JSON(gResp.Err())
+		ctx.JSON(http.StatusBadRequest, gResp)
+		return
 	}
 
 	newUser, err := c.createUC.Execute(user)
 	if err != nil {
 		gResp.Message = err.Error()
-		return ctx.Status(fiber.StatusBadRequest).JSON(gResp.Err())
+		ctx.JSON(http.StatusBadRequest, gResp.Err())
+		return
 	}
 
 	gResp.User = response.NewUserResponse(newUser)
-	return ctx.Status(fiber.StatusCreated).JSON(gResp.Ok())
+	ctx.JSON(http.StatusCreated, gResp.Ok())
 }
 
-func (c UserController) Login(ctx *fiber.Ctx) error {
+func (c UserController) Login(ctx *gin.Context) {
 	var user userdomain.User
 	var gResp response.Generic
 
-	if err := ctx.BodyParser(&user); err != nil {
+	if err := ctx.Bind(&user); err != nil {
 		gResp.Message = "invalid request"
-		return ctx.Status(fiber.StatusBadRequest).JSON(gResp.Err())
+		ctx.JSON(http.StatusBadRequest, gResp.Err())
+		return
 	}
 
 	u, token, err := c.loginUC.Execute(user.Email, user.Password)
 
 	if err != nil {
 		gResp.Message = err.Error()
-		return ctx.Status(fiber.StatusBadRequest).JSON(gResp.Err())
+		ctx.JSON(http.StatusBadRequest, gResp.Err())
+		return
 	}
 
 	gResp.User = response.NewUserResponse(u)
 	gResp.Token = token
-	return ctx.Status(fiber.StatusOK).JSON(gResp.Ok())
+	ctx.JSON(http.StatusOK, gResp.Ok())
 }
 
-// func (c *UserController) GetUserById(ctx *fiber.Ctx) error {
+// func (c *UserController) GetUserById(ctx *gin.Context) error {
 // 	idString := ctx.Params("id")
 // 	id, err := uuid.Parse(idString)
 
@@ -76,6 +81,6 @@ func (c UserController) Login(ctx *fiber.Ctx) error {
 // 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"status": "ok", "data": user})
 // }
 
-func (c UserController) Index(ctx *fiber.Ctx) error {
-	return ctx.SendString("Hello, World!!")
+func (c UserController) Index(ctx *gin.Context) {
+	ctx.String(200, "Hello, World!!")
 }

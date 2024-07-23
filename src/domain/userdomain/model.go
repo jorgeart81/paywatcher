@@ -4,9 +4,9 @@ import "github.com/google/uuid"
 
 type User struct {
 	ID       uuid.UUID `json:"id"`
-	Email    string    `json:"email"`
-	Username string    `json:"username"`
-	Password string    `json:"password,omitempty"`
+	Email    string    `form:"email" json:"email" binding:"email,required"`
+	Username string    `form:"usename" json:"username"`
+	Password string    `form:"password" json:"password,omitempty" binding:"required"`
 	Role     []Role    `json:"role"`
 }
 type Role string
