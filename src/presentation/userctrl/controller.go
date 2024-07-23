@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"paywatcher/src/application/usecases"
 	"paywatcher/src/domain/userdomain"
+	"paywatcher/src/presentation/request"
 	"paywatcher/src/presentation/response"
 
 	"github.com/gin-gonic/gin"
@@ -22,16 +23,28 @@ func NewUserController(createUserUC usecases.CreateUserUseCase, loginUserUC usec
 }
 
 func (c UserController) Create(ctx *gin.Context) {
-	var user userdomain.User
+	var req request.RegisterUser
 	var gResp response.Generic
 
-	if err := ctx.Bind(&user); err != nil {
-		gResp.Message = "invalid request"
-		ctx.JSON(http.StatusBadRequest, gResp)
+	if err := ctx.ShouldBind(&req); err != nil {
+		gResp.Message = err.Error()
+		ctx.JSON(http.StatusBadRequest, gResp.Err())
 		return
 	}
 
-	newUser, err := c.createUC.Execute(user)
+	if err := req.ValidateRoles(); err != nil {
+		gResp.Message = err.Error()
+		ctx.JSON(http.StatusBadRequest, gResp.Err())
+		return
+	}
+
+	newUser, err := c.createUC.Execute(userdomain.User{
+		Email:    req.Email,
+		Password: req.Password,
+		Username: req.Username,
+		Role:     req.Role,
+	})
+
 	if err != nil {
 		gResp.Message = err.Error()
 		ctx.JSON(http.StatusBadRequest, gResp.Err())
@@ -43,16 +56,16 @@ func (c UserController) Create(ctx *gin.Context) {
 }
 
 func (c UserController) Login(ctx *gin.Context) {
-	var user userdomain.User
+	var req request.LoginUser
 	var gResp response.Generic
 
-	if err := ctx.Bind(&user); err != nil {
-		gResp.Message = "invalid request"
+	if err := ctx.ShouldBind(&req); err != nil {
+		gResp.Message = err.Error()
 		ctx.JSON(http.StatusBadRequest, gResp.Err())
 		return
 	}
 
-	u, token, err := c.loginUC.Execute(user.Email, user.Password)
+	user, token, err := c.loginUC.Execute(req.Email, req.Password)
 
 	if err != nil {
 		gResp.Message = err.Error()
@@ -60,7 +73,7 @@ func (c UserController) Login(ctx *gin.Context) {
 		return
 	}
 
-	gResp.User = response.NewUserResponse(u)
+	gResp.User = response.NewUserResponse(user)
 	gResp.Token = token
 	ctx.JSON(http.StatusOK, gResp.Ok())
 }

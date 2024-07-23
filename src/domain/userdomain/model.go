@@ -4,19 +4,21 @@ import "github.com/google/uuid"
 
 type User struct {
 	ID       uuid.UUID `json:"id"`
-	Email    string    `form:"email" json:"email" binding:"email,required"`
-	Username string    `form:"usename" json:"username"`
-	Password string    `form:"password" json:"password,omitempty" binding:"required"`
-	Role     []Role    `json:"role"`
+	Email    string    `json:"email"`
+	Username string    `json:"username"`
+	Password string    `json:"password"`
+	Role     []string  `json:"role"`
 }
-type Role string
 
 const (
-	AdminRole Role = "admin"
-	UserRole  Role = "user"
+	RoleAdmin = "admin"
+	RoleUser  = "user"
 )
 
-var AllRoles = []Role{AdminRole, UserRole}
+var AllowedRoles = map[string]bool{
+	RoleAdmin: true,
+	RoleUser:  true,
+}
 
 func (u *User) NewUser() *User {
 	return &User{
@@ -24,6 +26,6 @@ func (u *User) NewUser() *User {
 		Email:    u.Email,
 		Username: u.Username,
 		Password: u.Password,
-		Role:     []Role{UserRole},
+		Role:     []string{RoleUser},
 	}
 }

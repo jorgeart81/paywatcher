@@ -23,7 +23,7 @@ func ToUserEntity(user *userdomain.User) *User {
 		Username: user.Username,
 		Email:    user.Email,
 		Password: user.Password,
-		Role:     ToStringRoles(user.Role),
+		Role:     user.Role,
 	}
 }
 
@@ -33,22 +33,6 @@ func (e *User) ToDomain() *userdomain.User {
 		Username: e.Username,
 		Email:    e.Email,
 		Password: e.Password,
-		Role:     ToDomainRoles(e.Role),
+		Role:     e.Role,
 	}
-}
-
-func ToDomainRoles(roles []string) []userdomain.Role {
-	domainRoles := make([]userdomain.Role, len(roles))
-	for i, role := range roles {
-		domainRoles[i] = userdomain.Role(role)
-	}
-	return domainRoles
-}
-
-func ToStringRoles(roles []userdomain.Role) []string {
-	stringRoles := make([]string, len(roles))
-	for i, role := range roles {
-		stringRoles[i] = string(role)
-	}
-	return stringRoles
 }
