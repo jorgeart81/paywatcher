@@ -10,8 +10,8 @@ type CreateUserUseCase struct {
 	userRepo userdomain.UserRepository
 }
 
-func NewCreateUserUseCase(userRepo userdomain.UserRepository) *CreateUserUseCase {
-	return &CreateUserUseCase{
+func NewCreateUserUseCase(userRepo userdomain.UserRepository) CreateUserUseCase {
+	return CreateUserUseCase{
 		userRepo: userRepo,
 	}
 }

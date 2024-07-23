@@ -13,8 +13,8 @@ type LoginUserUseCase struct {
 	auth     *auth.Auth
 }
 
-func NewLoginUserUseCase(userRepo userdomain.UserRepository, auth *auth.Auth) *LoginUserUseCase {
-	return &LoginUserUseCase{
+func NewLoginUserUseCase(userRepo userdomain.UserRepository, auth *auth.Auth) LoginUserUseCase {
+	return LoginUserUseCase{
 		userRepo: userRepo,
 		auth:     auth,
 	}

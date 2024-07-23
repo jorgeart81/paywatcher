@@ -54,5 +54,5 @@ func initUserController(db *gorm.DB) *userctrl.UserController {
 	loginUserUC := usecases.NewLoginUserUseCase(userRepository, authService)
 
 	// Create and return the controller
-	return userctrl.NewUserController(*createUserUC, *loginUserUC)
+	return userctrl.NewUserController(createUserUC, loginUserUC)
 }
