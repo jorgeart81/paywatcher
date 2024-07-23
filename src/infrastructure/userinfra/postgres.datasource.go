@@ -36,7 +36,7 @@ func (pu *PostgresUserDatasrc) GetUserById(id uuid.UUID) (*userdomain.User, erro
 	var userEntity model.User
 	db := pu.DB
 
-	if err := db.Find(&userEntity, "id = ?", id).Error; err != nil {
+	if err := db.First(&userEntity, "id = ?", id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, fmt.Errorf("user with ID %s not found", id)
 		}
@@ -51,7 +51,7 @@ func (pu *PostgresUserDatasrc) GetUserByEmail(email string) (*userdomain.User, e
 	var userEntity model.User
 	db := pu.DB
 
-	if err := db.Find(&userEntity, "email = ?", email).Error; err != nil {
+	if err := db.First(&userEntity, "email = ?", email).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, fmt.Errorf("user with email %s not found", email)
 		}

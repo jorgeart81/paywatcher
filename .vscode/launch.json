@@ -6,6 +6,7 @@
       "type": "go",
       "request": "launch",
       "mode": "auto",
+
       "program": "${workspaceFolder}/src",
       "cwd": "${workspaceFolder}", // Make sure this points to the root directory
       "envFile": "${workspaceFolder}/.env", // Make sure this points to the .env file
