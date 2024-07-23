@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"errors"
 	"paywatcher/src/domain/userdomain"
 
 	"golang.org/x/crypto/bcrypt"
@@ -19,14 +18,6 @@ func NewCreateUserUseCase(userRepo userdomain.UserRepository) *CreateUserUseCase
 
 func (uc *CreateUserUseCase) Execute(user userdomain.User) (*userdomain.User, error) {
 	repo := uc.userRepo
-
-	// Search if the user exists
-	u, err := repo.GetUserByEmail(user.Email)
-	if err != nil {
-		return nil, err
-	} else if u.Email == user.Email {
-		return nil, errors.New("user already exists")
-	}
 
 	// Hash the password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)

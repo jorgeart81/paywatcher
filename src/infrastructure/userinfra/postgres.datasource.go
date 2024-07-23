@@ -7,6 +7,7 @@ import (
 	"paywatcher/src/infrastructure/database/model"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
 	"gorm.io/gorm"
 )
 
@@ -18,12 +19,16 @@ type PostgresUserDatasrc struct {
 
 // Save implements userdomain.UserDatasource.
 func (pu *PostgresUserDatasrc) Save(user userdomain.User) (*userdomain.User, error) {
+	var pgErr *pgconn.PgError
 	db := pu.DB
 	userEntity := model.ToUserEntity(&user)
 
 	if err := db.Save(&userEntity).Error; err != nil {
 		if errors.Is(err, gorm.ErrRegistered) {
 			return nil, fmt.Errorf("user could not be created")
+		}
+		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+			return nil, fmt.Errorf("duplicate key, user could not be created")
 		}
 		return nil, err
 	}
