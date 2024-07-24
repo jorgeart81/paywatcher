@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"paywatcher/src/config"
 	"paywatcher/src/infrastructure/database"
 	"paywatcher/src/presentation"
@@ -9,21 +9,33 @@ import (
 
 func main() {
 	var conf config.Config
-	conf.Load()
-	env := config.Envs
+	conf.Init()
 
 	// Connect to database
-	var postgresDB database.PotsgresDB
-	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s timezone=%s connect_timeout=%d",
-		env.DB_HOST, env.DB_PORT, env.DB_USER, env.DB_PASSWORD, env.DB_NAME, env.SSLMODE, env.TIMEZONE, env.CONNECT_TIMEOUT)
+	db := config.Database
+	postgresDB := database.PotsgresDB{
+		Host:           db.Host,
+		Port:           db.Port,
+		User:           db.User,
+		Password:       db.Password,
+		DBName:         db.DBName,
+		SSLMode:        db.SSLMode,
+		Timezone:       db.Timezone,
+		ConnectTimeout: db.ConnectTimeout,
+	}
+	DB := postgresDB.Connect()
 
-	postgresDB.Connect(dsn)
+	if DB == nil {
+		log.Fatalf("Failed to connect to database")
+	}
 
 	// Start server
-	server := presentation.Server{
-		Port: env.APP_PORT,
-		Host: env.DB_HOST,
-		DB:   postgresDB.GetDB(),
+	serv := config.Server
+	var server = presentation.Server{
+		Port:    serv.Port,
+		Host:    serv.Host,
+		GinMode: serv.GinMode,
+		DB:      DB,
 	}
 
 	server.Start()

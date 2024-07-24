@@ -7,7 +7,6 @@ import (
 	"paywatcher/src/infrastructure/services"
 	"paywatcher/src/infrastructure/userinfra"
 	"paywatcher/src/presentation/userctrl"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -36,18 +35,18 @@ func (appRouter *AppRouter) Init() {
 }
 
 func initUserController(db *gorm.DB) *userctrl.UserController {
-	env := config.Envs
+	jwt := config.JWT
 
 	hashService := services.NewBcryptService()
 	authService := &auth.Auth{
-		JWTIssuer:     env.JWT_ISSUER,
-		JWTAudience:   env.JWT_AUDIENCE,
-		JWTSecret:     env.JWT_SECRET,
-		JWTExpiry:     time.Minute * 15,
-		RefreshExpiry: time.Hour * 24,
-		CookieDomain:  env.COOKIE_DOMAIN,
-		CookiePath:    "/",
-		CookieName:    "refresh_token",
+		JWTIssuer:     jwt.Issuer,
+		JWTAudience:   jwt.Audience,
+		JWTSecret:     jwt.Secret,
+		JWTExpiry:     jwt.Expiry,
+		RefreshExpiry: jwt.RefreshExpiry,
+		CookieDomain:  jwt.CookieDomain,
+		CookiePath:    jwt.CookiePath,
+		CookieName:    jwt.CookieName,
 	}
 
 	// Create datasource, repository and use case

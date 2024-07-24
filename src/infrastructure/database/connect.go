@@ -9,16 +9,21 @@ import (
 )
 
 type PotsgresDB struct {
-	db *gorm.DB
+	Host           string
+	Port           int
+	User           string
+	Password       string
+	DBName         string
+	SSLMode        string
+	Timezone       string
+	ConnectTimeout int
 }
 
-// var PotsgresDB *gorm.DB
-func (p PotsgresDB) GetDB() *gorm.DB {
-	return p.db
-}
-
-func (p *PotsgresDB) Connect(dsn string) {
+func (db *PotsgresDB) Connect() *gorm.DB {
 	var err error
+
+	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s timezone=%s connect_timeout=%d",
+		db.Host, db.Port, db.User, db.Password, db.DBName, db.SSLMode, db.Timezone, db.ConnectTimeout)
 
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -34,5 +39,5 @@ func (p *PotsgresDB) Connect(dsn string) {
 	DB.AutoMigrate(model.Category{})
 	fmt.Println("migrated schemas!")
 
-	p.db = DB
+	return DB
 }
