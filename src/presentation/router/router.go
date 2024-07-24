@@ -1,40 +1,38 @@
-package presentation
+package router
 
 import (
+	"fmt"
+	"log"
 	"paywatcher/src/application/auth"
 	"paywatcher/src/application/usecases"
 	"paywatcher/src/config"
 	"paywatcher/src/infrastructure/services"
 	"paywatcher/src/infrastructure/userinfra"
-	"paywatcher/src/presentation/userctrl"
+	"paywatcher/src/presentation/controller"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-type AppRouter struct {
-	app *gin.Engine
-	db  *gorm.DB
-}
+func Initialize(port int, host string, ginMode string, db *gorm.DB) {
+	if len(ginMode) > 0 {
+		gin.SetMode(ginMode)
+	}
 
-func NewAppRouter(app *gin.Engine, db *gorm.DB) *AppRouter {
-	return &AppRouter{app: app, db: db}
-}
+	router := gin.Default()
 
-func (appRouter *AppRouter) Init() {
-	r := appRouter.app
-	api := r.Group("/api")
+	routes := &appRoutes{
+		userController: initUserController(db),
+	}
+	routes.initializeRoutes(router)
 
-	userController := initUserController(appRouter.db)
-
-	{
-		api.GET("/", userController.Index)
-		api.POST("/user/create", userController.Create)
-		api.POST("/user/login", userController.Login)
+	addr := fmt.Sprintf("%s:%d", host, port)
+	if err := router.Run(addr); err != nil {
+		log.Fatal(err)
 	}
 }
 
-func initUserController(db *gorm.DB) *userctrl.UserController {
+func initUserController(db *gorm.DB) *controller.UserController {
 	jwt := config.JWT
 
 	hashService := services.NewBcryptService()
@@ -57,5 +55,5 @@ func initUserController(db *gorm.DB) *userctrl.UserController {
 	loginUserUC := usecases.NewLoginUserUseCase(userRepository, authService, hashService)
 
 	// Create and return the controller
-	return userctrl.NewUserController(createUserUC, loginUserUC)
+	return controller.NewUserController(createUserUC, loginUserUC)
 }

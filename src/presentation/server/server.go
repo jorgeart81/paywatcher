@@ -1,13 +1,13 @@
-package main
+package server
 
 import (
 	"log"
 	"paywatcher/src/config"
 	"paywatcher/src/infrastructure/database"
-	"paywatcher/src/presentation"
+	"paywatcher/src/presentation/router"
 )
 
-func main() {
+func Start() {
 	var conf config.Config
 	conf.Init()
 
@@ -31,12 +31,6 @@ func main() {
 
 	// Start server
 	serv := config.Server
-	var server = presentation.Server{
-		Port:    serv.Port,
-		Host:    serv.Host,
-		GinMode: serv.GinMode,
-		DB:      DB,
-	}
+	router.Initialize(serv.Port, serv.Host, serv.GinMode, DB)
 
-	server.Start()
 }
