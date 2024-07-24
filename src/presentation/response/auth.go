@@ -1,7 +1,7 @@
 package response
 
 import (
-	"paywatcher/src/domain/userdomain"
+	"paywatcher/src/domain/entity"
 
 	"github.com/google/uuid"
 )
@@ -13,7 +13,7 @@ type UserResponse struct {
 	Role     []string  `json:"role"`
 }
 
-func NewUserResponse(user *userdomain.User) UserResponse {
+func NewUserResponse(user *entity.UserEnt) UserResponse {
 	return UserResponse{
 		ID:       user.ID,
 		Email:    user.Email,

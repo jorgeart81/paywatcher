@@ -1,7 +1,7 @@
 package model
 
 import (
-	"paywatcher/src/domain/userdomain"
+	"paywatcher/src/domain/entity"
 	"time"
 
 	"github.com/google/uuid"
@@ -17,7 +17,7 @@ type User struct {
 	UpdatedAt time.Time `gorm:"column:updated_at"`
 }
 
-func ToUserEntity(user *userdomain.User) *User {
+func ToUserEntity(user *entity.UserEnt) *User {
 	return &User{
 		ID:       user.ID,
 		Username: user.Username,
@@ -27,8 +27,8 @@ func ToUserEntity(user *userdomain.User) *User {
 	}
 }
 
-func (e *User) ToDomain() *userdomain.User {
-	return &userdomain.User{
+func (e *User) ToDomain() *entity.UserEnt {
+	return &entity.UserEnt{
 		ID:       e.ID,
 		Username: e.Username,
 		Email:    e.Email,

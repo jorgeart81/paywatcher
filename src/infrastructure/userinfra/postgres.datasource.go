@@ -3,7 +3,7 @@ package userinfra
 import (
 	"errors"
 	"fmt"
-	"paywatcher/src/domain/userdomain"
+	"paywatcher/src/domain/entity"
 	"paywatcher/src/infrastructure/database/model"
 
 	"github.com/google/uuid"
@@ -18,7 +18,7 @@ type PostgresUserDatasrc struct {
 }
 
 // Save implements userdomain.UserDatasource.
-func (pu *PostgresUserDatasrc) Save(user userdomain.User) (*userdomain.User, error) {
+func (pu *PostgresUserDatasrc) Save(user entity.UserEnt) (*entity.UserEnt, error) {
 	var pgErr *pgconn.PgError
 	db := pu.DB
 	userEntity := model.ToUserEntity(&user)
@@ -37,7 +37,7 @@ func (pu *PostgresUserDatasrc) Save(user userdomain.User) (*userdomain.User, err
 }
 
 // GetUserById implements userdomain.UserDatasource.
-func (pu *PostgresUserDatasrc) GetUserById(id uuid.UUID) (*userdomain.User, error) {
+func (pu *PostgresUserDatasrc) GetUserById(id uuid.UUID) (*entity.UserEnt, error) {
 	var userEntity model.User
 	db := pu.DB
 
@@ -52,7 +52,7 @@ func (pu *PostgresUserDatasrc) GetUserById(id uuid.UUID) (*userdomain.User, erro
 }
 
 // GetUserByEmail implements userdomain.UserDatasource.
-func (pu *PostgresUserDatasrc) GetUserByEmail(email string) (*userdomain.User, error) {
+func (pu *PostgresUserDatasrc) GetUserByEmail(email string) (*entity.UserEnt, error) {
 	var userEntity model.User
 	db := pu.DB
 

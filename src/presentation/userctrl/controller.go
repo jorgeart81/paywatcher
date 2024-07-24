@@ -3,7 +3,7 @@ package userctrl
 import (
 	"net/http"
 	"paywatcher/src/application/usecases"
-	"paywatcher/src/domain/userdomain"
+	"paywatcher/src/domain/entity"
 	"paywatcher/src/presentation/request"
 	"paywatcher/src/presentation/response"
 
@@ -38,7 +38,7 @@ func (c UserController) Create(ctx *gin.Context) {
 		return
 	}
 
-	newUser, err := c.createUC.Execute(userdomain.User{
+	newUser, err := c.createUC.Execute(entity.UserEnt{
 		Email:    req.Email,
 		Password: req.Password,
 		Username: req.Username,

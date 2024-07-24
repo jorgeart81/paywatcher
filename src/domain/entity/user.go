@@ -1,8 +1,8 @@
-package userdomain
+package entity
 
 import "github.com/google/uuid"
 
-type User struct {
+type UserEnt struct {
 	ID       uuid.UUID `json:"id"`
 	Email    string    `json:"email"`
 	Username string    `json:"username"`
@@ -15,13 +15,13 @@ const (
 	RoleUser  = "user"
 )
 
-var AllowedRoles = map[string]bool{
+var UserAllowedRoles = map[string]bool{
 	RoleAdmin: true,
 	RoleUser:  true,
 }
 
-func (u *User) NewUser() *User {
-	return &User{
+func (u *UserEnt) NewUser() *UserEnt {
+	return &UserEnt{
 		ID:       uuid.New(),
 		Email:    u.Email,
 		Username: u.Username,

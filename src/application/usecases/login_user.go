@@ -3,24 +3,28 @@ package usecases
 import (
 	"errors"
 	"paywatcher/src/application/auth"
-	"paywatcher/src/domain/userdomain"
+	"paywatcher/src/domain/entity"
+	"paywatcher/src/domain/repositories"
+	"paywatcher/src/domain/services"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginUserUseCase struct {
-	userRepo userdomain.UserRepository
-	auth     *auth.Auth
+	userRepo   repositories.UserRepository
+	auth       *auth.Auth
+	hasService services.HashService
 }
 
-func NewLoginUserUseCase(userRepo userdomain.UserRepository, auth *auth.Auth) LoginUserUseCase {
+func NewLoginUserUseCase(userRepo repositories.UserRepository, auth *auth.Auth, hasService services.HashService) LoginUserUseCase {
 	return LoginUserUseCase{
-		userRepo: userRepo,
-		auth:     auth,
+		userRepo:   userRepo,
+		auth:       auth,
+		hasService: hasService,
 	}
 }
 
-func (uc *LoginUserUseCase) Execute(email, password string) (*userdomain.User, string, error) {
+func (uc *LoginUserUseCase) Execute(email, password string) (*entity.UserEnt, string, error) {
 	repo := uc.userRepo
 
 	user, err := repo.GetUserByEmail(email)

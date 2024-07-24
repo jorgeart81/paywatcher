@@ -4,6 +4,7 @@ import (
 	"paywatcher/src/application/auth"
 	"paywatcher/src/application/usecases"
 	"paywatcher/src/config"
+	"paywatcher/src/infrastructure/services"
 	"paywatcher/src/infrastructure/userinfra"
 	"paywatcher/src/presentation/userctrl"
 	"time"
@@ -37,6 +38,7 @@ func (appRouter *AppRouter) Init() {
 func initUserController(db *gorm.DB) *userctrl.UserController {
 	env := config.Envs
 
+	hashService := services.NewBcryptService()
 	authService := &auth.Auth{
 		JWTIssuer:     env.JWT_ISSUER,
 		JWTAudience:   env.JWT_AUDIENCE,
@@ -52,8 +54,8 @@ func initUserController(db *gorm.DB) *userctrl.UserController {
 	userDatasource := &userinfra.PostgresUserDatasrc{DB: db}
 	userRepository := userinfra.NewUserRepository(userDatasource)
 
-	createUserUC := usecases.NewCreateUserUseCase(userRepository)
-	loginUserUC := usecases.NewLoginUserUseCase(userRepository, authService)
+	createUserUC := usecases.NewCreateUserUseCase(userRepository, hashService)
+	loginUserUC := usecases.NewLoginUserUseCase(userRepository, authService, hashService)
 
 	// Create and return the controller
 	return userctrl.NewUserController(createUserUC, loginUserUC)

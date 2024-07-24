@@ -1,7 +1,8 @@
 package userinfra
 
 import (
-	"paywatcher/src/domain/userdomain"
+	"paywatcher/src/domain/datasource"
+	"paywatcher/src/domain/entity"
 
 	"github.com/google/uuid"
 )
@@ -9,12 +10,12 @@ import (
 // var _ userdomain.UserRepository = &UserRepositoryImpl{}
 
 type UserRepositoryImpl struct {
-	Datasource userdomain.UserDatasource
+	Datasource datasource.UserDS
 }
 
 var userRepository *UserRepositoryImpl
 
-func NewUserRepository(datasource userdomain.UserDatasource) *UserRepositoryImpl {
+func NewUserRepository(datasource datasource.UserDS) *UserRepositoryImpl {
 	if userRepository == nil {
 		userRepository = &UserRepositoryImpl{
 			Datasource: datasource,
@@ -24,16 +25,16 @@ func NewUserRepository(datasource userdomain.UserDatasource) *UserRepositoryImpl
 }
 
 // Save implements userdomain.UserRepository.
-func (u *UserRepositoryImpl) Save(user userdomain.User) (*userdomain.User, error) {
+func (u *UserRepositoryImpl) Save(user entity.UserEnt) (*entity.UserEnt, error) {
 	return u.Datasource.Save(user)
 }
 
 // GetUserById implements userdomain.UserRepository.
-func (u *UserRepositoryImpl) GetUserById(id uuid.UUID) (*userdomain.User, error) {
+func (u *UserRepositoryImpl) GetUserById(id uuid.UUID) (*entity.UserEnt, error) {
 	return u.Datasource.GetUserById(id)
 }
 
 // GetUserByEmail implements userdomain.UserRepository.
-func (u *UserRepositoryImpl) GetUserByEmail(email string) (*userdomain.User, error) {
+func (u *UserRepositoryImpl) GetUserByEmail(email string) (*entity.UserEnt, error) {
 	return u.Datasource.GetUserByEmail(email)
 }

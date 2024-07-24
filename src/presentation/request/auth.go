@@ -2,7 +2,7 @@ package request
 
 import (
 	"fmt"
-	"paywatcher/src/domain/userdomain"
+	"paywatcher/src/domain/entity"
 )
 
 type RegisterUser struct {
@@ -15,7 +15,7 @@ type RegisterUser struct {
 // ValidateRoles checks if all roles assigned to the user are allowed.
 func (u *RegisterUser) ValidateRoles() error {
 	for _, role := range u.Role {
-		if _, ok := userdomain.AllowedRoles[role]; !ok {
+		if _, ok := entity.UserAllowedRoles[role]; !ok {
 			return fmt.Errorf("invalid role: %s", role)
 		}
 	}

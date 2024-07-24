@@ -1,22 +1,26 @@
 package usecases
 
 import (
-	"paywatcher/src/domain/userdomain"
+	"paywatcher/src/domain/entity"
+	"paywatcher/src/domain/repositories"
+	"paywatcher/src/domain/services"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 type CreateUserUseCase struct {
-	userRepo userdomain.UserRepository
+	userRepo   repositories.UserRepository
+	hasService services.HashService
 }
 
-func NewCreateUserUseCase(userRepo userdomain.UserRepository) CreateUserUseCase {
+func NewCreateUserUseCase(userRepo repositories.UserRepository, hasService services.HashService) CreateUserUseCase {
 	return CreateUserUseCase{
-		userRepo: userRepo,
+		userRepo:   userRepo,
+		hasService: hasService,
 	}
 }
 
-func (uc *CreateUserUseCase) Execute(user userdomain.User) (*userdomain.User, error) {
+func (uc *CreateUserUseCase) Execute(user entity.UserEnt) (*entity.UserEnt, error) {
 	repo := uc.userRepo
 
 	// Hash the password
