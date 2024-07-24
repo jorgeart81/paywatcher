@@ -8,9 +8,11 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type environmentVariables struct {
-	APP_HOST        string
-	APP_PORT        int
+type envVars struct {
+	APP_HOST string
+	APP_PORT int
+	GIN_MODE string
+	// Database
 	DB_HOST         string
 	DB_PORT         int
 	DB_USER         string
@@ -19,7 +21,7 @@ type environmentVariables struct {
 	SSLMODE         string
 	TIMEZONE        string
 	CONNECT_TIMEOUT int
-
+	// JWT
 	DOMAIN            string
 	COOKIE_DOMAIN     string
 	JWT_SECRET        string
@@ -28,16 +30,18 @@ type environmentVariables struct {
 	CORS_ALLOW_ORIGIN string
 }
 
-func (c *Config) loadEnv() (*environmentVariables, error) {
+func (c *Config) loadEnv() (*envVars, error) {
 
 	err := godotenv.Load()
 	if err != nil {
 		return nil, fmt.Errorf("error loading .env file: %w", err)
 	}
 
-	envs := &environmentVariables{
-		APP_HOST:        os.Getenv("APP_HOST"),
-		APP_PORT:        parseInt(os.Getenv("APP_PORT"), "error parsing APP_PORT"),
+	envs := envVars{
+		APP_HOST: os.Getenv("APP_HOST"),
+		APP_PORT: parseInt(os.Getenv("APP_PORT"), "error parsing APP_PORT"),
+		GIN_MODE: os.Getenv("GIN_MODE"),
+
 		DB_HOST:         os.Getenv("DB_HOST"),
 		DB_PORT:         parseInt(os.Getenv("DB_PORT"), "error parsing DB_PORT"),
 		DB_USER:         os.Getenv("DB_USER"),
@@ -55,7 +59,7 @@ func (c *Config) loadEnv() (*environmentVariables, error) {
 		CORS_ALLOW_ORIGIN: os.Getenv("CORS_ALLOW_ORIGIN"),
 	}
 
-	return envs, nil
+	return &envs, nil
 }
 
 func parseInt(value string, errorMessage string) int {
