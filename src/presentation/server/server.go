@@ -32,8 +32,12 @@ func Start() {
 		Timezone:       dbConf.Timezone,
 		ConnectTimeout: dbConf.ConnectTimeout,
 	}
-	db, _ := postgresDB.Connect()
+	db, err := postgresDB.Connect()
 
+	if err != nil {
+		logger.Errorf("error initializing database: %v", err)
+		return
+	}
 	if db == nil {
 		log.Fatal("failed to connect to database")
 	}

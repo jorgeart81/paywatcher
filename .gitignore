@@ -1,3 +1,14 @@
+# binary
+*.exe
+*.dll
+*.so
+*.dylib
+
+# test binary
+*.test
+
+# coverage
+*.out
 
 # local env files
 .env*.local
