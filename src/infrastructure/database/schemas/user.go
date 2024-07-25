@@ -1,4 +1,4 @@
-package model
+package schemas
 
 import (
 	"paywatcher/src/domain/entity"
@@ -17,7 +17,7 @@ type User struct {
 	UpdatedAt time.Time `gorm:"column:updated_at"`
 }
 
-func ToUserEntity(user *entity.UserEnt) *User {
+func ToUserSchema(user *entity.UserEnt) *User {
 	return &User{
 		ID:       user.ID,
 		Username: user.Username,

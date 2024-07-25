@@ -9,14 +9,14 @@ import (
 )
 
 type CreateUserUseCase struct {
-	userRepo   repositories.UserRepository
-	hasService services.HashService
+	userRepo    repositories.UserRepository
+	hashService services.HashService
 }
 
-func NewCreateUserUseCase(userRepo repositories.UserRepository, hasService services.HashService) CreateUserUseCase {
+func NewCreateUserUseCase(userRepo repositories.UserRepository, hashService services.HashService) CreateUserUseCase {
 	return CreateUserUseCase{
-		userRepo:   userRepo,
-		hasService: hasService,
+		userRepo:    userRepo,
+		hashService: hashService,
 	}
 }
 

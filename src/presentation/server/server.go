@@ -21,25 +21,25 @@ func Start() {
 	logger.Info("starting the server")
 
 	// Connect to database
-	db := config.Database
+	dbConf := config.Database
 	postgresDB := database.PotsgresDB{
-		Host:           db.Host,
-		Port:           db.Port,
-		User:           db.User,
-		Password:       db.Password,
-		DBName:         db.DBName,
-		SSLMode:        db.SSLMode,
-		Timezone:       db.Timezone,
-		ConnectTimeout: db.ConnectTimeout,
+		Host:           dbConf.Host,
+		Port:           dbConf.Port,
+		User:           dbConf.User,
+		Password:       dbConf.Password,
+		DBName:         dbConf.DBName,
+		SSLMode:        dbConf.SSLMode,
+		Timezone:       dbConf.Timezone,
+		ConnectTimeout: dbConf.ConnectTimeout,
 	}
-	DB := postgresDB.Connect()
+	db, _ := postgresDB.Connect()
 
-	if DB == nil {
+	if db == nil {
 		log.Fatal("failed to connect to database")
 	}
 
 	// Start server
 	serv := config.Server
 	logger.Infof("starting server on port %d", serv.Port)
-	router.Initialize(serv.Port, serv.Host, serv.GinMode, DB)
+	router.Initialize(serv.Port, serv.Host, serv.GinMode, db)
 }

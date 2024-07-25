@@ -11,16 +11,16 @@ import (
 )
 
 type LoginUserUseCase struct {
-	userRepo   repositories.UserRepository
-	auth       *auth.Auth
-	hasService services.HashService
+	userRepo    repositories.UserRepository
+	auth        *auth.Auth
+	hashService services.HashService
 }
 
-func NewLoginUserUseCase(userRepo repositories.UserRepository, auth *auth.Auth, hasService services.HashService) LoginUserUseCase {
+func NewLoginUserUseCase(userRepo repositories.UserRepository, auth *auth.Auth, hashService services.HashService) LoginUserUseCase {
 	return LoginUserUseCase{
-		userRepo:   userRepo,
-		auth:       auth,
-		hasService: hasService,
+		userRepo:    userRepo,
+		auth:        auth,
+		hashService: hashService,
 	}
 }
 

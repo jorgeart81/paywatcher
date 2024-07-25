@@ -3,13 +3,11 @@ package database
 import (
 	"fmt"
 	"paywatcher/src/config"
-	"paywatcher/src/infrastructure/database/model"
+	"paywatcher/src/infrastructure/database/schemas"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
-
-var logger *config.Logger
 
 type PotsgresDB struct {
 	Host           string
@@ -22,25 +20,36 @@ type PotsgresDB struct {
 	ConnectTimeout int
 }
 
-func (db *PotsgresDB) Connect() *gorm.DB {
-	logger = config.GetLogger("database")
+func (p *PotsgresDB) Connect() (*gorm.DB, error) {
+	logger := config.GetLogger("database")
 
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s timezone=%s connect_timeout=%d",
-		db.Host, db.Port, db.User, db.Password, db.DBName, db.SSLMode, db.Timezone, db.ConnectTimeout)
+		p.Host, p.Port, p.User, p.Password, p.DBName, p.SSLMode, p.Timezone, p.ConnectTimeout)
 
-	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(fmt.Sprintf("failed to connect to database because: %s!", err.Error()))
 	}
-
 	logger.Info("connected to database")
 
-	// Schema migration
+	// Schemas migration
 	logger.Info("migrating schemas")
-	DB.AutoMigrate(model.User{})
-	DB.AutoMigrate(model.Payment{})
-	DB.AutoMigrate(model.Category{})
+	msgMigrationErr := "postgres automigration error"
+
+	if err := db.AutoMigrate(schemas.User{}); err != nil {
+		logger.Errorf("%s %v", msgMigrationErr, err)
+		return nil, err
+	}
+	if err := db.AutoMigrate(schemas.Payment{}); err != nil {
+		logger.Errorf("%s %v", msgMigrationErr, err)
+		return nil, err
+	}
+	if err := db.AutoMigrate(schemas.Category{}); err != nil {
+		logger.Errorf("%s %v", msgMigrationErr, err)
+		return nil, err
+	}
+
 	logger.Info("migrated schemas!")
 
-	return DB
+	return db, nil
 }
