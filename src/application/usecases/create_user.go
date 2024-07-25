@@ -20,7 +20,7 @@ func NewCreateUserUseCase(userRepo repositories.UserRepository, hashService serv
 	}
 }
 
-func (uc *CreateUserUseCase) Execute(user entity.UserEnt) (*entity.UserEnt, error) {
+func (uc *CreateUserUseCase) Execute(user *entity.UserEnt) (*entity.UserEnt, error) {
 	repo := uc.userRepo
 
 	// Hash the password

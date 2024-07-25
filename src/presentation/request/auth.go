@@ -12,6 +12,15 @@ type RegisterUser struct {
 	Role     []string `form:"role" json:"role"`
 }
 
+func (u *RegisterUser) ToUserEntity() *entity.UserEnt {
+	return &entity.UserEnt{
+		Email:    u.Email,
+		Username: u.Username,
+		Password: u.Password,
+		Role:     u.Role,
+	}
+}
+
 // ValidateRoles checks if all roles assigned to the user are allowed.
 func (u *RegisterUser) ValidateRoles() error {
 	for _, role := range u.Role {

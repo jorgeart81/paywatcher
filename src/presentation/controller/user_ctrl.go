@@ -3,7 +3,6 @@ package controller
 import (
 	"net/http"
 	"paywatcher/src/application/usecases"
-	"paywatcher/src/domain/entity"
 	"paywatcher/src/presentation/request"
 	"paywatcher/src/presentation/response"
 
@@ -24,58 +23,53 @@ func newUserController(createUserUC usecases.CreateUserUseCase, loginUserUC usec
 
 func (c UserController) Create(ctx *gin.Context) {
 	var req request.RegisterUser
-	var gResp response.Generic
 
 	if err := ctx.ShouldBind(&req); err != nil {
-		gResp.Message = err.Error()
-		ctx.JSON(http.StatusBadRequest, gResp.Err())
+		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
+			Message: err.Error(),
+		})
 		return
 	}
 
 	if err := req.ValidateRoles(); err != nil {
-		gResp.Message = err.Error()
-		ctx.JSON(http.StatusBadRequest, gResp.Err())
+		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
+			Message: err.Error(),
+		})
 		return
 	}
 
-	newUser, err := c.createUC.Execute(entity.UserEnt{
-		Email:    req.Email,
-		Password: req.Password,
-		Username: req.Username,
-		Role:     req.Role,
-	})
-
+	newUser, err := c.createUC.Execute(req.ToUserEntity())
 	if err != nil {
-		gResp.Message = err.Error()
-		ctx.JSON(http.StatusBadRequest, gResp.Err())
+		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
+			Message: err.Error(),
+		})
 		return
 	}
 
-	gResp.User = response.NewUserResponse(newUser)
-	ctx.JSON(http.StatusCreated, gResp.Ok())
+	authResponse := response.NewAuthResponse(newUser, nil)
+	response.SendSuccess(ctx, http.StatusCreated, authResponse)
 }
 
 func (c UserController) Login(ctx *gin.Context) {
-	var req request.LoginUser
-	var gResp response.Generic
+	var req *request.LoginUser
 
 	if err := ctx.ShouldBind(&req); err != nil {
-		gResp.Message = err.Error()
-		ctx.JSON(http.StatusBadRequest, gResp.Err())
+		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
+			Message: err.Error(),
+		})
 		return
 	}
 
 	user, token, err := c.loginUC.Execute(req.Email, req.Password)
-
 	if err != nil {
-		gResp.Message = err.Error()
-		ctx.JSON(http.StatusBadRequest, gResp.Err())
+		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
+			Message: err.Error(),
+		})
 		return
 	}
 
-	gResp.User = response.NewUserResponse(user)
-	gResp.Token = token
-	ctx.JSON(http.StatusOK, gResp.Ok())
+	authResponse := response.NewAuthResponse(user, token)
+	response.SendSuccess(ctx, http.StatusOK, authResponse)
 }
 
 // func (c *UserController) GetUserById(ctx *gin.Context) error {
