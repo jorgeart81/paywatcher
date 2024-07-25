@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"errors"
-	"paywatcher/src/application/auth"
 	"paywatcher/src/domain/entity"
 	"paywatcher/src/domain/repositories"
 	"paywatcher/src/domain/services"
@@ -12,11 +11,11 @@ import (
 
 type LoginUserUseCase struct {
 	userRepo    repositories.UserRepository
-	auth        *auth.Auth
+	auth        services.Authenticator
 	hashService services.HashService
 }
 
-func NewLoginUserUseCase(userRepo repositories.UserRepository, auth *auth.Auth, hashService services.HashService) LoginUserUseCase {
+func NewLoginUserUseCase(userRepo repositories.UserRepository, auth services.Authenticator, hashService services.HashService) LoginUserUseCase {
 	return LoginUserUseCase{
 		userRepo:    userRepo,
 		auth:        auth,
@@ -36,7 +35,7 @@ func (uc *LoginUserUseCase) Execute(email, password string) (*entity.UserEnt, st
 		return nil, "", errors.New("invalid credentials")
 	}
 
-	jwtUser := auth.JwtUser{
+	jwtUser := services.AuthUser{
 		ID:       user.ID,
 		Username: user.Username,
 	}

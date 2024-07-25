@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"paywatcher/src/application/auth"
 	"paywatcher/src/domain/entity"
 	"paywatcher/src/domain/repositories"
 	"paywatcher/src/domain/services"
@@ -11,11 +10,11 @@ import (
 
 type CreateUserUseCase struct {
 	userRepo    repositories.UserRepository
-	auth        *auth.Auth
+	auth        services.Authenticator
 	hashService services.HashService
 }
 
-func NewCreateUserUseCase(userRepo repositories.UserRepository, auth *auth.Auth, hashService services.HashService) CreateUserUseCase {
+func NewCreateUserUseCase(userRepo repositories.UserRepository, auth services.Authenticator, hashService services.HashService) CreateUserUseCase {
 	return CreateUserUseCase{
 		userRepo:    userRepo,
 		auth:        auth,
@@ -39,7 +38,7 @@ func (uc *CreateUserUseCase) Execute(user *entity.UserEnt) (*entity.UserEnt, str
 		return nil, "", err
 	}
 
-	jwtUser := auth.JwtUser{
+	jwtUser := services.AuthUser{
 		ID:       newUser.ID,
 		Username: newUser.Username,
 	}

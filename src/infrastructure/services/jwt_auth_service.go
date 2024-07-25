@@ -1,13 +1,13 @@
-package auth
+package services
 
 import (
+	"paywatcher/src/domain/services"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/google/uuid"
 )
 
-type Auth struct {
+type JWTAuth struct {
 	JWTIssuer     string
 	JWTAudience   string
 	JWTSecret     string
@@ -18,17 +18,7 @@ type Auth struct {
 	CookieName    string
 }
 
-type JwtUser struct {
-	ID       uuid.UUID `json:"id"`
-	Username string    `json:"username"`
-}
-
-type TokenPairs struct {
-	AccessToken  string `json:"accessToken"`
-	RefreshToken string `json:"refreshToken"`
-}
-
-func (a *Auth) GenerateTokenPair(user *JwtUser) (TokenPairs, error) {
+func (a *JWTAuth) GenerateTokenPair(user *services.AuthUser) (services.TokenPairs, error) {
 	// Create a token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": user.Username,
@@ -43,7 +33,7 @@ func (a *Auth) GenerateTokenPair(user *JwtUser) (TokenPairs, error) {
 	// Create a signed token
 	signedAccessToken, err := token.SignedString([]byte(a.JWTSecret))
 	if err != nil {
-		return TokenPairs{}, err
+		return services.TokenPairs{}, err
 	}
 
 	// Create a refresh token and set claims
@@ -57,15 +47,15 @@ func (a *Auth) GenerateTokenPair(user *JwtUser) (TokenPairs, error) {
 	// Create signed refresh token
 	signedRefreshToken, err := refreshToken.SignedString([]byte(a.JWTSecret))
 	if err != nil {
-		return TokenPairs{}, err
+		return services.TokenPairs{}, err
 	}
 
-	// Create TokenPairs and populate with signed tokens
-	var tokenPairs = TokenPairs{
+	// Create services.TokenPairs and populate with signed tokens
+	var tokenPairs = services.TokenPairs{
 		AccessToken:  signedAccessToken,
 		RefreshToken: signedRefreshToken,
 	}
 
-	// Return TokenPairs
+	// Return services.TokenPairs
 	return tokenPairs, nil
 }

@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"paywatcher/src/application/auth"
 	"paywatcher/src/application/usecases"
 	"paywatcher/src/config"
 	"paywatcher/src/infrastructure/services"
@@ -32,7 +31,7 @@ func initUserController(db *gorm.DB) *UserController {
 	jwtConf := config.JWT
 
 	hashService := services.NewBcryptService()
-	authService := &auth.Auth{
+	authService := &services.JWTAuth{
 		JWTIssuer:     jwtConf.Issuer,
 		JWTAudience:   jwtConf.Audience,
 		JWTSecret:     jwtConf.Secret,
