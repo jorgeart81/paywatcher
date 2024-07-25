@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Generic struct {
+type GenericSuccess struct {
 	Data  interface{} `json:"data,omitempty"`
 	Token interface{} `json:"token,omitempty"`
 }
@@ -22,7 +22,10 @@ func SendError(ctx *gin.Context, code int, error *GenericError) {
 }
 
 func SendSuccess(ctx *gin.Context, code int, data interface{}) {
-
 	ctx.Header("Content-type", "application/json")
 	ctx.JSON(code, data)
+}
+
+type ErrorResponse struct {
+	Error GenericError `json:"error"`
 }

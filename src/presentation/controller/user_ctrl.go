@@ -21,6 +21,17 @@ func newUserController(createUserUC usecases.CreateUserUseCase, loginUserUC usec
 	}
 }
 
+// @BasePath /api
+
+// @Summary Create user
+// @Description Create a new user
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param request body request.RegisterUser true "Request body"
+// @Success 201 {object} response.AuthResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /user/create [post]
 func (c UserController) Create(ctx *gin.Context) {
 	var req request.RegisterUser
 
@@ -50,6 +61,15 @@ func (c UserController) Create(ctx *gin.Context) {
 	response.SendSuccess(ctx, http.StatusCreated, authResponse)
 }
 
+// @Summary Login user
+// @Description User login with email and password
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param request body request.LoginUser true "Request body"
+// @Success 200 {object} response.AuthResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /user/login [post]
 func (c UserController) Login(ctx *gin.Context) {
 	var req *request.LoginUser
 
