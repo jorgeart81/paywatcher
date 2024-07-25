@@ -7,9 +7,18 @@ import (
 	"paywatcher/src/presentation/router"
 )
 
+var logger *config.Logger
+
 func Start() {
-	var conf config.Config
-	conf.Init()
+	defer func() {
+		if r := recover(); r != nil {
+			log.Fatalf("Recovered from panic: %v", r)
+		}
+	}()
+
+	config.Initialize()
+	logger = config.GetLogger("server")
+	logger.Info("starting the server")
 
 	// Connect to database
 	db := config.Database
@@ -26,11 +35,11 @@ func Start() {
 	DB := postgresDB.Connect()
 
 	if DB == nil {
-		log.Fatalf("Failed to connect to database")
+		log.Fatal("failed to connect to database")
 	}
 
 	// Start server
 	serv := config.Server
+	logger.Infof("starting server on port %d", serv.Port)
 	router.Initialize(serv.Port, serv.Host, serv.GinMode, DB)
-
 }

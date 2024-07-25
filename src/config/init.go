@@ -5,14 +5,19 @@ import (
 	"time"
 )
 
-var Database *database
-var Server *server
-var JWT *jwt
+var (
+	Database *database
+	Server   *server
+	JWT      *jwt
 
-func (c *Config) Init() {
-	e, err := c.loadEnv()
+	logger *Logger
+)
+
+func Initialize() {
+	e, err := loadEnv()
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 
 	Database = &database{
@@ -42,4 +47,10 @@ func (c *Config) Init() {
 		CookiePath:    "/",
 		CookieName:    "refresh_token",
 	}
+}
+
+func GetLogger(prefix string) *Logger {
+	// Initialize Logger
+	logger = NewLogger(prefix)
+	return logger
 }

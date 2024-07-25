@@ -2,8 +2,6 @@ package config
 
 import "time"
 
-type Config struct{}
-
 type database struct {
 	Host           string
 	Port           int

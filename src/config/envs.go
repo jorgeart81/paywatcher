@@ -30,8 +30,7 @@ type envVars struct {
 	CORS_ALLOW_ORIGIN string
 }
 
-func (c *Config) loadEnv() (*envVars, error) {
-
+func loadEnv() (*envVars, error) {
 	err := godotenv.Load()
 	if err != nil {
 		return nil, fmt.Errorf("error loading .env file: %w", err)

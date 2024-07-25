@@ -7,7 +7,7 @@
       "request": "launch",
       "mode": "auto",
 
-      "program": "${workspaceFolder}/src",
+      "program": "${workspaceFolder}/",
       "cwd": "${workspaceFolder}", // Make sure this points to the root directory
       "envFile": "${workspaceFolder}/.env", // Make sure this points to the .env file
       "args": []

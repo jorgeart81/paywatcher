@@ -2,11 +2,14 @@ package database
 
 import (
 	"fmt"
+	"paywatcher/src/config"
 	"paywatcher/src/infrastructure/database/model"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
+
+var logger *config.Logger
 
 type PotsgresDB struct {
 	Host           string
@@ -20,7 +23,7 @@ type PotsgresDB struct {
 }
 
 func (db *PotsgresDB) Connect() *gorm.DB {
-	var err error
+	logger = config.GetLogger("database")
 
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s timezone=%s connect_timeout=%d",
 		db.Host, db.Port, db.User, db.Password, db.DBName, db.SSLMode, db.Timezone, db.ConnectTimeout)
@@ -30,14 +33,14 @@ func (db *PotsgresDB) Connect() *gorm.DB {
 		panic(fmt.Sprintf("failed to connect to database because: %s!", err.Error()))
 	}
 
-	fmt.Println("database connected")
+	logger.Info("connected to database")
 
 	// Schema migration
-	fmt.Println("migrating schemas...")
+	logger.Info("migrating schemas")
 	DB.AutoMigrate(model.User{})
 	DB.AutoMigrate(model.Payment{})
 	DB.AutoMigrate(model.Category{})
-	fmt.Println("migrated schemas!")
+	logger.Info("migrated schemas!")
 
 	return DB
 }

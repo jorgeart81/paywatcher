@@ -14,17 +14,23 @@ import (
 	"gorm.io/gorm"
 )
 
+var logger *config.Logger
+
 func Initialize(port int, host string, ginMode string, db *gorm.DB) {
+	logger = config.GetLogger("router")
+
 	if len(ginMode) > 0 {
 		gin.SetMode(ginMode)
 	}
 
 	router := gin.Default()
+	logger.Info("router created")
 
 	routes := &appRoutes{
 		userController: initUserController(db),
 	}
 	routes.initializeRoutes(router)
+	logger.Info("routes initialized")
 
 	addr := fmt.Sprintf("%s:%d", host, port)
 	if err := router.Run(addr); err != nil {
