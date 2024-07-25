@@ -38,7 +38,7 @@ func (c UserController) Create(ctx *gin.Context) {
 		return
 	}
 
-	newUser, err := c.createUC.Execute(req.ToUserEntity())
+	newUser, token, err := c.createUC.Execute(req.ToUserEntity())
 	if err != nil {
 		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
 			Message: err.Error(),
@@ -46,7 +46,7 @@ func (c UserController) Create(ctx *gin.Context) {
 		return
 	}
 
-	authResponse := response.NewAuthResponse(newUser, nil)
+	authResponse := response.NewAuthResponse(newUser, token)
 	response.SendSuccess(ctx, http.StatusCreated, authResponse)
 }
 

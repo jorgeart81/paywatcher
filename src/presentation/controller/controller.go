@@ -47,7 +47,7 @@ func initUserController(db *gorm.DB) *UserController {
 	userDatasource := &userinfra.PostgresUserDatasrc{DB: db}
 	userRepositoryImpl := userinfra.NewUserRepository(userDatasource)
 
-	createUserUC := usecases.NewCreateUserUseCase(userRepositoryImpl, hashService)
+	createUserUC := usecases.NewCreateUserUseCase(userRepositoryImpl, authService, hashService)
 	loginUserUC := usecases.NewLoginUserUseCase(userRepositoryImpl, authService, hashService)
 
 	// Create and return the controller
