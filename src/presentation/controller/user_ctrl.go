@@ -15,7 +15,7 @@ type UserController struct {
 	loginUC  *usecases.LoginUserUseCase
 }
 
-func NewUserController(createUserUC usecases.CreateUserUseCase, loginUserUC usecases.LoginUserUseCase) *UserController {
+func newUserController(createUserUC usecases.CreateUserUseCase, loginUserUC usecases.LoginUserUseCase) *UserController {
 	return &UserController{
 		createUC: &createUserUC,
 		loginUC:  &loginUserUC,

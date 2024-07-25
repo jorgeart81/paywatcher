@@ -10,11 +10,13 @@ type appRoutes struct {
 	userController *controller.UserController
 }
 
-func (routes *appRoutes) initializeRoutes(router *gin.Engine) {
+func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
+	logger.Info("routes initialized")
+
 	api := router.Group("/api")
 
 	{
-		userController := routes.userController
+		userController := ar.userController
 		api.GET("/", userController.Index)
 		api.POST("/user/create", userController.Create)
 		api.POST("/user/login", userController.Login)
