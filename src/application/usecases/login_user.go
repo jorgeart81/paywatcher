@@ -21,16 +21,16 @@ func NewLoginUserUseCase(userRepo repositories.UserRepository, auth services.Aut
 	}
 }
 
-func (uc *LoginUserUseCase) Execute(email, password string) (*entity.UserEnt, string, error) {
+func (uc *LoginUserUseCase) Execute(email, password string) (*entity.UserEnt, services.TokenPairs, error) {
 	repo := uc.userRepo
 
 	user, err := repo.GetUserByEmail(email)
 	if err != nil {
-		return nil, "", err
+		return nil, services.TokenPairs{}, err
 	}
 
 	if err := uc.hashService.Compare(user.Password, password); err != nil {
-		return nil, "", errors.New("invalid credentials")
+		return nil, services.TokenPairs{}, errors.New("invalid credentials")
 	}
 
 	jwtUser := services.AuthUser{
@@ -40,8 +40,8 @@ func (uc *LoginUserUseCase) Execute(email, password string) (*entity.UserEnt, st
 
 	tokenPairs, err := uc.auth.GenerateTokenPair(&jwtUser)
 	if err != nil {
-		return nil, "", err
+		return nil, services.TokenPairs{}, err
 	}
 
-	return user, tokenPairs.AccessToken, nil
+	return user, tokenPairs, nil
 }

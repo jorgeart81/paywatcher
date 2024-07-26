@@ -20,20 +20,20 @@ func NewCreateUserUseCase(userRepo repositories.UserRepository, auth services.Au
 	}
 }
 
-func (uc *CreateUserUseCase) Execute(user *entity.UserEnt) (*entity.UserEnt, string, error) {
+func (uc *CreateUserUseCase) Execute(user *entity.UserEnt) (*entity.UserEnt, services.TokenPairs, error) {
 	repo := uc.userRepo
 
 	// Hash the password
 	hashedPassword, err := uc.hashService.Has(user.Password)
 	if err != nil {
-		return nil, "", err
+		return nil, services.TokenPairs{}, err
 	}
 	user.Password = hashedPassword
 
 	// Save user
 	newUser, err := repo.Save(*user.NewUser())
 	if err != nil {
-		return nil, "", err
+		return nil, services.TokenPairs{}, err
 	}
 
 	jwtUser := services.AuthUser{
@@ -43,8 +43,8 @@ func (uc *CreateUserUseCase) Execute(user *entity.UserEnt) (*entity.UserEnt, str
 
 	tokenPairs, err := uc.auth.GenerateTokenPair(&jwtUser)
 	if err != nil {
-		return nil, "", err
+		return nil, services.TokenPairs{}, err
 	}
 
-	return newUser, tokenPairs.AccessToken, nil
+	return newUser, tokenPairs, nil
 }

@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 	"paywatcher/src/application/usecases"
+	"paywatcher/src/domain/services"
 	"paywatcher/src/presentation/request"
 	"paywatcher/src/presentation/response"
 
@@ -10,14 +11,16 @@ import (
 )
 
 type UserController struct {
-	createUC *usecases.CreateUserUseCase
-	loginUC  *usecases.LoginUserUseCase
+	authService services.Authenticator
+	createUC    *usecases.CreateUserUseCase
+	loginUC     *usecases.LoginUserUseCase
 }
 
-func newUserController(createUserUC usecases.CreateUserUseCase, loginUserUC usecases.LoginUserUseCase) *UserController {
+func newUserController(authService services.Authenticator, createUserUC usecases.CreateUserUseCase, loginUserUC usecases.LoginUserUseCase) *UserController {
 	return &UserController{
-		createUC: &createUserUC,
-		loginUC:  &loginUserUC,
+		authService: authService,
+		createUC:    &createUserUC,
+		loginUC:     &loginUserUC,
 	}
 }
 
@@ -49,7 +52,7 @@ func (c UserController) Create(ctx *gin.Context) {
 		return
 	}
 
-	newUser, token, err := c.createUC.Execute(req.ToUserEntity())
+	newUser, tokenPairs, err := c.createUC.Execute(req.ToUserEntity())
 	if err != nil {
 		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
 			Message: err.Error(),
@@ -57,7 +60,10 @@ func (c UserController) Create(ctx *gin.Context) {
 		return
 	}
 
-	authResponse := response.NewAuthResponse(newUser, token)
+	refreshCookie := c.authService.GetRefreshCookie(tokenPairs.RefreshToken)
+	http.SetCookie(ctx.Writer, refreshCookie)
+
+	authResponse := response.NewAuthResponse(newUser, tokenPairs.AccessToken)
 	response.SendSuccess(ctx, http.StatusCreated, authResponse)
 }
 
@@ -80,7 +86,7 @@ func (c UserController) Login(ctx *gin.Context) {
 		return
 	}
 
-	user, token, err := c.loginUC.Execute(req.Email, req.Password)
+	user, tokenPairs, err := c.loginUC.Execute(req.Email, req.Password)
 	if err != nil {
 		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
 			Message: err.Error(),
@@ -88,7 +94,10 @@ func (c UserController) Login(ctx *gin.Context) {
 		return
 	}
 
-	authResponse := response.NewAuthResponse(user, token)
+	refreshCookie := c.authService.GetRefreshCookie(tokenPairs.RefreshToken)
+	http.SetCookie(ctx.Writer, refreshCookie)
+
+	authResponse := response.NewAuthResponse(user, tokenPairs.AccessToken)
 	response.SendSuccess(ctx, http.StatusOK, authResponse)
 }
 
