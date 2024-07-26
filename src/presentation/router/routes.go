@@ -30,7 +30,7 @@ func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
 	{
 		userController := ar.userController
 		api.GET("/", userController.Index)
-		api.POST("/user/create", userController.Create)
+		api.POST("/user/register", userController.Create)
 		api.POST("/user/login", userController.Login)
 	}
 

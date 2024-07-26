@@ -55,32 +55,6 @@ definitions:
 info:
   contact: {}
 paths:
-  /user/create:
-    post:
-      consumes:
-      - application/json
-      description: Create a new user
-      parameters:
-      - description: Request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/request.RegisterUser'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/response.AuthResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      summary: Create user
-      tags:
-      - User
   /user/login:
     post:
       consumes:
@@ -105,6 +79,32 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Login user
+      tags:
+      - User
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.RegisterUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Register user
       tags:
       - User
 swagger: "2.0"

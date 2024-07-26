@@ -26,15 +26,15 @@ func newUserController(authService services.Authenticator, createUserUC usecases
 
 // @BasePath /api
 
-// @Summary Create user
-// @Description Create a new user
+// @Summary Register user
+// @Description Register a new user
 // @Tags User
 // @Accept json
 // @Produce json
 // @Param request body request.RegisterUser true "Request body"
 // @Success 201 {object} response.AuthResponse
 // @Failure 400 {object} response.ErrorResponse
-// @Router /user/create [post]
+// @Router /user/register [post]
 func (c UserController) Create(ctx *gin.Context) {
 	var req request.RegisterUser
 
