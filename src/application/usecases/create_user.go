@@ -4,8 +4,6 @@ import (
 	"paywatcher/src/domain/entity"
 	"paywatcher/src/domain/repositories"
 	"paywatcher/src/domain/services"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type CreateUserUseCase struct {
@@ -26,11 +24,11 @@ func (uc *CreateUserUseCase) Execute(user *entity.UserEnt) (*entity.UserEnt, str
 	repo := uc.userRepo
 
 	// Hash the password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	hashedPassword, err := uc.hashService.Has(user.Password)
 	if err != nil {
 		return nil, "", err
 	}
-	user.Password = string(hashedPassword)
+	user.Password = hashedPassword
 
 	// Save user
 	newUser, err := repo.Save(*user.NewUser())

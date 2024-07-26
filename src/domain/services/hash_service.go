@@ -1,6 +1,6 @@
 package services
 
 type HashService interface {
-	Has(password string) ([]byte, error)
+	Has(password string) (string, error)
 	Compare(hashedPassword, password string) error
 }

@@ -5,8 +5,6 @@ import (
 	"paywatcher/src/domain/entity"
 	"paywatcher/src/domain/repositories"
 	"paywatcher/src/domain/services"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginUserUseCase struct {
@@ -31,7 +29,7 @@ func (uc *LoginUserUseCase) Execute(email, password string) (*entity.UserEnt, st
 		return nil, "", err
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+	if err := uc.hashService.Compare(user.Password, password); err != nil {
 		return nil, "", errors.New("invalid credentials")
 	}
 
