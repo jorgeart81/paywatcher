@@ -2,8 +2,7 @@ package controller
 
 import (
 	"paywatcher/src/application/usecases"
-	"paywatcher/src/config"
-	"paywatcher/src/infrastructure/services"
+	"paywatcher/src/domain/services"
 	"paywatcher/src/infrastructure/userinfra"
 
 	"gorm.io/gorm"
@@ -11,13 +10,17 @@ import (
 
 var (
 	userController *UserController
+	authService    services.Authenticator
+	hashService    services.HashService
 )
 
 type Controller struct {
 	User *UserController
 }
 
-func InitializeController(db *gorm.DB) {
+func InitializeController(db *gorm.DB, authServ services.Authenticator, hashServ services.HashService) {
+	authService = authServ
+	hashService = hashServ
 	userController = initUserController(db)
 }
 
@@ -28,19 +31,19 @@ func GetControllers() *Controller {
 }
 
 func initUserController(db *gorm.DB) *UserController {
-	jwtConf := config.JWT
+	// jwtConf := config.JWT
 
-	hashService := services.NewBcryptService()
-	authService := &services.JWTAuth{
-		JWTIssuer:     jwtConf.Issuer,
-		JWTAudience:   jwtConf.Audience,
-		JWTSecret:     jwtConf.Secret,
-		JWTExpiry:     jwtConf.Expiry,
-		RefreshExpiry: jwtConf.RefreshExpiry,
-		CookieDomain:  jwtConf.CookieDomain,
-		CookiePath:    jwtConf.CookiePath,
-		CookieName:    jwtConf.CookieName,
-	}
+	// hashService := services.NewBcryptService()
+	// authService := &services.JWTAuth{
+	// 	JWTIssuer:     jwtConf.Issuer,
+	// 	JWTAudience:   jwtConf.Audience,
+	// 	JWTSecret:     jwtConf.Secret,
+	// 	JWTExpiry:     jwtConf.Expiry,
+	// 	RefreshExpiry: jwtConf.RefreshExpiry,
+	// 	CookieDomain:  jwtConf.CookieDomain,
+	// 	CookiePath:    jwtConf.CookiePath,
+	// 	CookieName:    jwtConf.CookieName,
+	// }
 
 	// Create datasource, repository and use case
 	userDatasource := &userinfra.PostgresUserDatasrc{DB: db}
