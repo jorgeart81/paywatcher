@@ -32,9 +32,10 @@ func Initialize() {
 	}
 
 	Server = &server{
-		Host:    e.APP_HOST,
-		Port:    e.APP_PORT,
-		GinMode: e.GIN_MODE,
+		Host:            e.APP_HOST,
+		Port:            e.APP_PORT,
+		GinMode:         e.GIN_MODE,
+		CorsAllowOrigin: e.CORS_ALLOW_ORIGIN,
 	}
 
 	JWT = &jwt{

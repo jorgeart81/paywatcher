@@ -14,9 +14,10 @@ type database struct {
 }
 
 type server struct {
-	Host    string
-	Port    int
-	GinMode string
+	Host            string
+	Port            int
+	GinMode         string
+	CorsAllowOrigin string
 }
 
 type jwt struct {
