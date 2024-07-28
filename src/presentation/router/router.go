@@ -40,7 +40,7 @@ func Initialize(port int, host string, ginMode string, db *gorm.DB) {
 	controllers := controller.GetControllers()
 
 	routes := &appRoutes{
-		userController: controllers.User,
+		authController: controllers.User,
 		authService:    authService,
 	}
 	routes.initializeRoutes(router)

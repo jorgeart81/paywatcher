@@ -9,19 +9,19 @@ import (
 )
 
 var (
-	userController *UserController
+	userController *AuthController
 	authService    services.Authenticator
 	hashService    services.HashService
 )
 
 type Controller struct {
-	User *UserController
+	User *AuthController
 }
 
 func InitializeController(db *gorm.DB, authServ services.Authenticator, hashServ services.HashService) {
 	authService = authServ
 	hashService = hashServ
-	userController = initUserController(db)
+	userController = initAuthController(db)
 }
 
 func GetControllers() *Controller {
@@ -30,21 +30,7 @@ func GetControllers() *Controller {
 	}
 }
 
-func initUserController(db *gorm.DB) *UserController {
-	// jwtConf := config.JWT
-
-	// hashService := services.NewBcryptService()
-	// authService := &services.JWTAuth{
-	// 	JWTIssuer:     jwtConf.Issuer,
-	// 	JWTAudience:   jwtConf.Audience,
-	// 	JWTSecret:     jwtConf.Secret,
-	// 	JWTExpiry:     jwtConf.Expiry,
-	// 	RefreshExpiry: jwtConf.RefreshExpiry,
-	// 	CookieDomain:  jwtConf.CookieDomain,
-	// 	CookiePath:    jwtConf.CookiePath,
-	// 	CookieName:    jwtConf.CookieName,
-	// }
-
+func initAuthController(db *gorm.DB) *AuthController {
 	// Create datasource, repository and use case
 	userDatasource := &userinfra.PostgresUserDatasrc{DB: db}
 	userRepositoryImpl := userinfra.NewUserRepository(userDatasource)
@@ -53,5 +39,5 @@ func initUserController(db *gorm.DB) *UserController {
 	loginUserUC := usecases.NewLoginUserUseCase(userRepositoryImpl, authService, hashService)
 
 	// Create and return the controller
-	return newUserController(authService, createUserUC, loginUserUC)
+	return newAuthController(authService, createUserUC, loginUserUC)
 }

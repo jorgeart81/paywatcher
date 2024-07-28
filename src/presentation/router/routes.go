@@ -14,7 +14,7 @@ import (
 
 type appRoutes struct {
 	authService    services.Authenticator
-	userController *controller.UserController
+	authController *controller.AuthController
 }
 
 func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
@@ -30,7 +30,7 @@ func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
 	logger.Info("routes initialized")
 	api := router.Group(basePath)
 
-	userController := ar.userController
+	userController := ar.authController
 	{
 		api.POST("/user/register", userController.Create)
 		api.POST("/user/login", userController.Login)
@@ -40,6 +40,7 @@ func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
 		authMiddleware := middlewares.NewAuthMiddleware(ar.authService)
 		authorized := api.Group("/")
 		authorized.Use(authMiddleware.AuthRequired())
+
 		authorized.GET("/test-auth", userController.Index)
 	}
 

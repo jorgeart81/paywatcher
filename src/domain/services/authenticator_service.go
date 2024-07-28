@@ -27,7 +27,7 @@ type Claims struct {
 
 type Authenticator interface {
 	GenerateTokenPair(user *AuthUser) (TokenPairs, error)
-	GetTokenFromHeaderAndVerify(w http.ResponseWriter, r *http.Request) (*Claims, error)
+	VerifyToken(token string) (*Claims, error)
 	GetRefreshCookie(refreshToken string) *http.Cookie
 	GetExpiredRefreshCookie() *http.Cookie
 }

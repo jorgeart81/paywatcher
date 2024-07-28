@@ -10,14 +10,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserController struct {
+type AuthController struct {
 	authService services.Authenticator
 	createUC    *usecases.CreateUserUseCase
 	loginUC     *usecases.LoginUserUseCase
 }
 
-func newUserController(authService services.Authenticator, createUserUC usecases.CreateUserUseCase, loginUserUC usecases.LoginUserUseCase) *UserController {
-	return &UserController{
+func newAuthController(authService services.Authenticator, createUserUC usecases.CreateUserUseCase, loginUserUC usecases.LoginUserUseCase) *AuthController {
+	return &AuthController{
 		authService: authService,
 		createUC:    &createUserUC,
 		loginUC:     &loginUserUC,
@@ -35,7 +35,7 @@ func newUserController(authService services.Authenticator, createUserUC usecases
 // @Success 201 {object} response.AuthResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Router /user/register [post]
-func (c UserController) Create(ctx *gin.Context) {
+func (c AuthController) Create(ctx *gin.Context) {
 	var req request.RegisterUser
 
 	if err := ctx.ShouldBind(&req); err != nil {
@@ -76,7 +76,7 @@ func (c UserController) Create(ctx *gin.Context) {
 // @Success 200 {object} response.AuthResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Router /user/login [post]
-func (c UserController) Login(ctx *gin.Context) {
+func (c AuthController) Login(ctx *gin.Context) {
 	var req *request.LoginUser
 
 	if err := ctx.ShouldBind(&req); err != nil {
@@ -117,6 +117,6 @@ func (c UserController) Login(ctx *gin.Context) {
 // 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"status": "ok", "data": user})
 // }
 
-func (c UserController) Index(ctx *gin.Context) {
+func (c AuthController) Index(ctx *gin.Context) {
 	ctx.String(200, "Hello, World!!")
 }

@@ -73,24 +73,10 @@ func (a *JWTAuth) GenerateTokenPair(user *services.AuthUser) (services.TokenPair
 	return tokenPairs, nil
 }
 
-// GetTokenFromHeaderAndVerify implements services.Authenticator.
-func (a *JWTAuth) GetTokenFromHeaderAndVerify(w http.ResponseWriter, r *http.Request) (*services.Claims, error) {
-	// Response vary
-	w.Header().Add("Vary", "Authorization")
+// VerifyToken implements services.Authenticator.
+func (a *JWTAuth) VerifyToken(token string) (*services.Claims, error) {
 
-	// Get Authorization Header
-	authHeader := r.Header.Get("Authorization")
-	if authHeader == "" {
-		return nil, errors.New("missing authorization header")
-	}
-
-	// Trim if we have the word Bearer
-	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-	if tokenString == authHeader {
-		return nil, errors.New("invalid authorization header format")
-	}
-
-	token, err := jwt.ParseWithClaims(tokenString, &jwtClaims{}, func(token *jwt.Token) (interface{}, error) {
+	parseToken, err := jwt.ParseWithClaims(token, &jwtClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("unexpected signing method")
 		}
@@ -104,7 +90,7 @@ func (a *JWTAuth) GetTokenFromHeaderAndVerify(w http.ResponseWriter, r *http.Req
 		return nil, err
 	}
 
-	if jwtClaims, ok := token.Claims.(*jwtClaims); ok && token.Valid {
+	if jwtClaims, ok := parseToken.Claims.(*jwtClaims); ok && parseToken.Valid {
 		return &services.Claims{
 			Username: jwtClaims.Username,
 			ID:       jwtClaims.ID,
