@@ -4,7 +4,7 @@
         "contact": {}
     },
     "paths": {
-        "/user/login": {
+        "/login": {
             "post": {
                 "description": "User login with email and password",
                 "consumes": [
@@ -44,7 +44,7 @@
                 }
             }
         },
-        "/user/register": {
+        "/register": {
             "post": {
                 "description": "Register a new user",
                 "consumes": [

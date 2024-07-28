@@ -6,21 +6,21 @@ import (
 	"paywatcher/src/domain/services"
 )
 
-type CreateUserUseCase struct {
+type RegisterUserUseCase struct {
 	userRepo    repositories.UserRepository
 	auth        services.Authenticator
 	hashService services.HashService
 }
 
-func NewCreateUserUseCase(userRepo repositories.UserRepository, auth services.Authenticator, hashService services.HashService) CreateUserUseCase {
-	return CreateUserUseCase{
+func NewRegisterUserUseCase(userRepo repositories.UserRepository, auth services.Authenticator, hashService services.HashService) RegisterUserUseCase {
+	return RegisterUserUseCase{
 		userRepo:    userRepo,
 		auth:        auth,
 		hashService: hashService,
 	}
 }
 
-func (uc *CreateUserUseCase) Execute(user *entity.UserEnt) (*entity.UserEnt, services.TokenPairs, error) {
+func (uc *RegisterUserUseCase) Execute(user *entity.UserEnt) (*entity.UserEnt, services.TokenPairs, error) {
 	repo := uc.userRepo
 
 	// Hash the password

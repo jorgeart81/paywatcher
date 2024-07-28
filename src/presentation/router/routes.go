@@ -32,8 +32,8 @@ func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
 
 	userController := ar.authController
 	{
-		api.POST("/user/register", userController.Create)
-		api.POST("/user/login", userController.Login)
+		api.POST("/register", userController.Create)
+		api.POST("/login", userController.Login)
 	}
 
 	{

@@ -55,7 +55,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /user/login:
+  /login:
     post:
       consumes:
       - application/json
@@ -81,7 +81,7 @@ paths:
       summary: Login user
       tags:
       - User
-  /user/register:
+  /register:
     post:
       consumes:
       - application/json

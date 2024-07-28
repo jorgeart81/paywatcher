@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"paywatcher/src/application/usecases"
+	"paywatcher/src/application/usecases/user"
 	"paywatcher/src/domain/services"
 	"paywatcher/src/infrastructure/userinfra"
 
@@ -35,8 +35,8 @@ func initAuthController(db *gorm.DB) *AuthController {
 	userDatasource := &userinfra.PostgresUserDatasrc{DB: db}
 	userRepositoryImpl := userinfra.NewUserRepository(userDatasource)
 
-	createUserUC := usecases.NewCreateUserUseCase(userRepositoryImpl, authService, hashService)
-	loginUserUC := usecases.NewLoginUserUseCase(userRepositoryImpl, authService, hashService)
+	createUserUC := user.NewRegisterUserUseCase(userRepositoryImpl, authService, hashService)
+	loginUserUC := user.NewLoginUserUseCase(userRepositoryImpl, authService, hashService)
 
 	// Create and return the controller
 	return newAuthController(authService, createUserUC, loginUserUC)

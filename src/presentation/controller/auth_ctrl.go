@@ -2,7 +2,7 @@ package controller
 
 import (
 	"net/http"
-	"paywatcher/src/application/usecases"
+	"paywatcher/src/application/usecases/user"
 	"paywatcher/src/domain/services"
 	"paywatcher/src/presentation/request"
 	"paywatcher/src/presentation/response"
@@ -12,11 +12,11 @@ import (
 
 type AuthController struct {
 	authService services.Authenticator
-	createUC    *usecases.CreateUserUseCase
-	loginUC     *usecases.LoginUserUseCase
+	createUC    *user.RegisterUserUseCase
+	loginUC     *user.LoginUserUseCase
 }
 
-func newAuthController(authService services.Authenticator, createUserUC usecases.CreateUserUseCase, loginUserUC usecases.LoginUserUseCase) *AuthController {
+func newAuthController(authService services.Authenticator, createUserUC user.RegisterUserUseCase, loginUserUC user.LoginUserUseCase) *AuthController {
 	return &AuthController{
 		authService: authService,
 		createUC:    &createUserUC,
@@ -34,7 +34,7 @@ func newAuthController(authService services.Authenticator, createUserUC usecases
 // @Param request body request.RegisterUser true "Request body"
 // @Success 201 {object} response.AuthResponse
 // @Failure 400 {object} response.ErrorResponse
-// @Router /user/register [post]
+// @Router /register [post]
 func (c AuthController) Create(ctx *gin.Context) {
 	var req request.RegisterUser
 
@@ -75,7 +75,7 @@ func (c AuthController) Create(ctx *gin.Context) {
 // @Param request body request.LoginUser true "Request body"
 // @Success 200 {object} response.AuthResponse
 // @Failure 400 {object} response.ErrorResponse
-// @Router /user/login [post]
+// @Router /login [post]
 func (c AuthController) Login(ctx *gin.Context) {
 	var req *request.LoginUser
 

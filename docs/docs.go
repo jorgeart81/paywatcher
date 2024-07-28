@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/user/login": {
+        "/login": {
             "post": {
                 "description": "User login with email and password",
                 "consumes": [
@@ -55,7 +55,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/register": {
+        "/register": {
             "post": {
                 "description": "Register a new user",
                 "consumes": [
