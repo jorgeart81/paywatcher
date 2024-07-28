@@ -45,5 +45,5 @@ func Start() {
 	// Start server
 	serv := config.Server
 	logger.Infof("starting server on port %d", serv.Port)
-	router.Initialize(serv.Port, serv.Host, serv.GinMode, db)
+	router.Initialize(serv.Port, serv.Host, serv.GinMode, db, serv.CorsAllowOrigin)
 }

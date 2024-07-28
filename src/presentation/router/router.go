@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"paywatcher/src/config"
+	"paywatcher/src/infrastructure/middlewares"
 	"paywatcher/src/infrastructure/services"
 	"paywatcher/src/presentation/controller"
 
@@ -13,7 +14,7 @@ import (
 
 var logger *config.Logger
 
-func Initialize(port int, host string, ginMode string, db *gorm.DB) {
+func Initialize(port int, host string, ginMode string, db *gorm.DB, corsAllowOrigin string) {
 	logger = config.GetLogger("router")
 
 	if len(ginMode) > 0 {
@@ -22,6 +23,8 @@ func Initialize(port int, host string, ginMode string, db *gorm.DB) {
 
 	router := gin.Default()
 	logger.Info("router created")
+	router.Use(middlewares.EnableCORS(corsAllowOrigin))
+	logger.Info("cors enabled")
 
 	jwtConf := config.JWT
 	authService := &services.JWTAuth{
