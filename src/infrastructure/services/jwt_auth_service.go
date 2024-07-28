@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 )
 
 type JWTAuth struct {
@@ -22,12 +23,12 @@ type JWTAuth struct {
 }
 
 type jwtClaims struct {
-	Username string `json:"username"`
-	ID       string `json:"sub"`
-	Audience string `json:"aud"`
-	Issuer   string `json:"iss"`
-	IssuedAt int64  `json:"iat"`
-	Expires  int64  `json:"exp"`
+	Username string    `json:"username"`
+	ID       uuid.UUID `json:"sub"`
+	Audience string    `json:"aud"`
+	Issuer   string    `json:"iss"`
+	IssuedAt int64     `json:"iat"`
+	Expires  int64     `json:"exp"`
 	jwt.RegisteredClaims
 }
 

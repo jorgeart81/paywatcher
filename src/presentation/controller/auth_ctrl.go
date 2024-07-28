@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 	"paywatcher/src/application/usecases/user"
+	"paywatcher/src/config"
 	"paywatcher/src/domain/services"
 	"paywatcher/src/presentation/request"
 	"paywatcher/src/presentation/response"
@@ -11,16 +12,18 @@ import (
 )
 
 type AuthController struct {
-	authService services.Authenticator
-	createUC    *user.RegisterUserUseCase
-	loginUC     *user.LoginUserUseCase
+	authService    services.Authenticator
+	createUC       *user.RegisterUserUseCase
+	loginUC        *user.LoginUserUseCase
+	refreshTokenUC *user.RefreshTokenUseCase
 }
 
-func newAuthController(authService services.Authenticator, createUserUC user.RegisterUserUseCase, loginUserUC user.LoginUserUseCase) *AuthController {
+func newAuthController(authService services.Authenticator, createUserUC user.RegisterUserUseCase, loginUserUC user.LoginUserUseCase, refreshTokenUC user.RefreshTokenUseCase) *AuthController {
 	return &AuthController{
-		authService: authService,
-		createUC:    &createUserUC,
-		loginUC:     &loginUserUC,
+		authService:    authService,
+		createUC:       &createUserUC,
+		loginUC:        &loginUserUC,
+		refreshTokenUC: &refreshTokenUC,
 	}
 }
 
@@ -101,22 +104,41 @@ func (c AuthController) Login(ctx *gin.Context) {
 	response.SendSuccess(ctx, http.StatusOK, authResponse)
 }
 
-// func (c *UserController) GetUserById(ctx *gin.Context) error {
-// 	idString := ctx.Params("id")
-// 	id, err := uuid.Parse(idString)
+// @Summary Refresh Token
+// @Description Create a new refresh token
+// @Tags User
+// @Produce json
+// @Success 200 {object} response.RefreshTokenResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 401 {object} response.ErrorResponse
+// @Router /refresh-token [get]
+func (c AuthController) RefreshToken(ctx *gin.Context) {
+	cookieName := config.JWT.CookieName
+	refreshToken, err := ctx.Cookie(cookieName)
+	if err != nil {
+		response.SendError(ctx, http.StatusUnauthorized, &response.GenericError{
+			Message: err.Error(),
+		})
+		return
+	}
 
-// 	if err != nil {
-// 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "invalid id"})
-// 	}
+	tokenPairs, err := c.refreshTokenUC.Execute(refreshToken)
+	if err != nil {
+		response.SendError(ctx, http.StatusUnauthorized, &response.GenericError{
+			Message: err.Error(),
+		})
+		return
+	}
 
-// 	user, err := c.Repo.GetUserById(id)
-// 	if err != nil {
-// 		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": "error", "message": "invalid id"})
-// 	}
+	refreshCookie := c.authService.GetRefreshCookie(tokenPairs.RefreshToken)
+	http.SetCookie(ctx.Writer, refreshCookie)
 
-// 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"status": "ok", "data": user})
-// }
+	refreshTokenResponse := response.NewRefreshTokenResponse(tokenPairs.AccessToken)
+	response.SendSuccess(ctx, http.StatusOK, refreshTokenResponse)
 
+}
+
+// TODO: only for demo
 func (c AuthController) Index(ctx *gin.Context) {
 	ctx.String(200, "Hello, World!!")
 }

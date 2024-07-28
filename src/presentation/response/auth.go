@@ -23,3 +23,13 @@ func NewAuthResponse(user *entity.UserEnt, tokens interface{}) AuthResponse {
 		Tokens:   tokens,
 	}
 }
+
+type RefreshTokenResponse struct {
+	Tokens interface{} `json:"tokens"`
+}
+
+func NewRefreshTokenResponse(tokens interface{}) RefreshTokenResponse {
+	return RefreshTokenResponse{
+		Tokens: tokens,
+	}
+}

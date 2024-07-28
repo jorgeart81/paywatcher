@@ -18,7 +18,7 @@ type TokenPairs struct {
 
 type Claims struct {
 	Username string
-	ID       string
+	ID       uuid.UUID
 	Audience string
 	Issuer   string
 	IssuedAt int64

@@ -42,6 +42,7 @@ func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
 		authorized.Use(authMiddleware.AuthRequired())
 
 		authorized.GET("/test-auth", userController.Index)
+		authorized.GET("/refresh-token", userController.RefreshToken)
 	}
 
 	// use ginSwagger middleware to serve the API docs
