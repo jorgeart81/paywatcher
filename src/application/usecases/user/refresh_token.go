@@ -32,7 +32,7 @@ func (r *RefreshTokenUseCase) Execute(refreshToken string) (services.TokenPairs,
 
 	jwtUser := services.AuthUser{
 		ID:       user.ID,
-		Username: claims.Username,
+		Username: user.Username,
 	}
 
 	tokenPairs, err := auth.GenerateTokenPair(&jwtUser)
