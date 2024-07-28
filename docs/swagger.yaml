@@ -52,6 +52,10 @@ definitions:
       message:
         type: string
     type: object
+  response.RefreshTokenResponse:
+    properties:
+      tokens: {}
+    type: object
 info:
   contact: {}
 paths:
@@ -79,6 +83,27 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Login user
+      tags:
+      - User
+  /refresh-token:
+    get:
+      description: Create a new refresh token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.RefreshTokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Refresh Token
       tags:
       - User
   /register:

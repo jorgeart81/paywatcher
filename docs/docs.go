@@ -55,6 +55,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/refresh-token": {
+            "get": {
+                "description": "Create a new refresh token",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Refresh Token",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.RefreshTokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/register": {
             "post": {
                 "description": "Register a new user",
@@ -175,6 +207,12 @@ const docTemplate = `{
                 "message": {
                     "type": "string"
                 }
+            }
+        },
+        "response.RefreshTokenResponse": {
+            "type": "object",
+            "properties": {
+                "tokens": {}
             }
         }
     }
