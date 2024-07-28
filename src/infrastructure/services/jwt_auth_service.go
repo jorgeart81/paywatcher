@@ -25,27 +25,24 @@ type JWTAuth struct {
 type jwtClaims struct {
 	Username string    `json:"username"`
 	ID       uuid.UUID `json:"sub"`
-	Audience string    `json:"aud"`
-	Issuer   string    `json:"iss"`
-	IssuedAt int64     `json:"iat"`
-	Expires  int64     `json:"exp"`
 	jwt.RegisteredClaims
 }
 
 func (a *JWTAuth) GenerateTokenPair(user *services.AuthUser) (services.TokenPairs, error) {
+	now := time.Now().UTC()
 	// Create a token
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": user.Username,
 		"sub":      user.ID,
 		"aud":      a.JWTAudience,
 		"iss":      a.JWTIssuer,
-		"iat":      time.Now().UTC().Unix(),
+		"iat":      now.Unix(),
 		"type":     "JWT",
-		"exp":      time.Now().UTC().Add(a.JWTExpiry).Unix(),
+		"exp":      now.Add(a.JWTExpiry).Unix(),
 	})
 
 	// Create a signed token
-	signedAccessToken, err := token.SignedString([]byte(a.JWTSecret))
+	signedAccessToken, err := accessToken.SignedString([]byte(a.JWTSecret))
 	if err != nil {
 		return services.TokenPairs{}, err
 	}
@@ -53,9 +50,9 @@ func (a *JWTAuth) GenerateTokenPair(user *services.AuthUser) (services.TokenPair
 	// Create a refresh token and set claims
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":  user.ID,
-		"iat":  time.Now().UTC().Unix(),
+		"iat":  now.Unix(),
 		"type": "JWT",
-		"exp":  time.Now().UTC().Add(a.RefreshExpiry).Unix(),
+		"exp":  now.Add(a.RefreshExpiry).Unix(),
 	})
 
 	// Create signed refresh token
@@ -95,10 +92,6 @@ func (a *JWTAuth) VerifyToken(token string) (*services.Claims, error) {
 		return &services.Claims{
 			Username: jwtClaims.Username,
 			ID:       jwtClaims.ID,
-			Audience: jwtClaims.Audience,
-			Issuer:   jwtClaims.Issuer,
-			IssuedAt: jwtClaims.IssuedAt,
-			Expires:  jwtClaims.Expires,
 		}, nil
 	} else {
 		return nil, errors.New("invalid token")
