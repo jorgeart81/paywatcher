@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"net/http"
 	"paywatcher/src/domain/services"
 	"strings"
 	"time"
@@ -17,9 +16,6 @@ type JWTAuth struct {
 	JWTSecret     string
 	JWTExpiry     time.Duration
 	RefreshExpiry time.Duration
-	CookieDomain  string
-	CookiePath    string
-	CookieName    string
 }
 
 type jwtClaims struct {
@@ -95,35 +91,5 @@ func (a *JWTAuth) VerifyToken(token string) (*services.Claims, error) {
 		}, nil
 	} else {
 		return nil, errors.New("invalid token")
-	}
-}
-
-// GetRefreshCookie implements services.Authenticator.
-func (a *JWTAuth) GetRefreshCookie(refreshToken string) *http.Cookie {
-	return &http.Cookie{
-		Name:     a.CookieName,
-		Path:     a.CookiePath,
-		Value:    refreshToken,
-		Expires:  time.Now().Add(a.RefreshExpiry),
-		MaxAge:   int(a.RefreshExpiry.Seconds()),
-		SameSite: http.SameSiteStrictMode,
-		Domain:   a.CookieDomain,
-		HttpOnly: true,
-		Secure:   true,
-	}
-}
-
-// GetExpiredRefreshCookie implements services.Authenticator.
-func (a *JWTAuth) GetExpiredRefreshCookie() *http.Cookie {
-	return &http.Cookie{
-		Name:     a.CookieName,
-		Path:     a.CookiePath,
-		Value:    "",
-		Expires:  time.Unix(0, 0),
-		MaxAge:   -1,
-		SameSite: http.SameSiteStrictMode,
-		Domain:   a.CookieDomain,
-		HttpOnly: true,
-		Secure:   true,
 	}
 }

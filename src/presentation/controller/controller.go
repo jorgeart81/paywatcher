@@ -3,6 +3,7 @@ package controller
 import (
 	"paywatcher/src/application/usecases/user"
 	"paywatcher/src/domain/services"
+	iServices "paywatcher/src/infrastructure/services"
 	"paywatcher/src/infrastructure/userinfra"
 
 	"gorm.io/gorm"
@@ -11,16 +12,14 @@ import (
 var (
 	userController *AuthController
 	authService    services.Authenticator
-	hashService    services.HashService
 )
 
 type Controller struct {
 	User *AuthController
 }
 
-func InitializeController(db *gorm.DB, authServ services.Authenticator, hashServ services.HashService) {
+func InitializeController(db *gorm.DB, authServ services.Authenticator) {
 	authService = authServ
-	hashService = hashServ
 	userController = initAuthController(db)
 }
 
@@ -31,6 +30,7 @@ func GetControllers() *Controller {
 }
 
 func initAuthController(db *gorm.DB) *AuthController {
+	hashService := iServices.NewBcryptService()
 	// Create datasource, repository and use case
 	userDatasource := &userinfra.PostgresUserDatasrc{DB: db}
 	userRepositoryImpl := userinfra.NewUserRepository(userDatasource)
@@ -40,5 +40,5 @@ func initAuthController(db *gorm.DB) *AuthController {
 	refreshTokenUC := user.NewRefreshTokenUseCase(userRepositoryImpl, authService)
 
 	// Create and return the controller
-	return newAuthController(authService, createUserUC, loginUserUC, refreshTokenUC)
+	return newAuthController(createUserUC, loginUserUC, refreshTokenUC)
 }

@@ -33,13 +33,9 @@ func Initialize(port int, host string, ginMode string, db *gorm.DB, corsAllowOri
 		JWTSecret:     jwtConf.Secret,
 		JWTExpiry:     jwtConf.Expiry,
 		RefreshExpiry: jwtConf.RefreshExpiry,
-		CookieDomain:  jwtConf.CookieDomain,
-		CookiePath:    jwtConf.CookiePath,
-		CookieName:    jwtConf.CookieName,
 	}
-	hashService := services.NewBcryptService()
 
-	controller.InitializeController(db, authService, hashService)
+	controller.InitializeController(db, authService)
 	controllers := controller.GetControllers()
 
 	routes := &appRoutes{

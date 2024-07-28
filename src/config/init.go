@@ -9,6 +9,7 @@ var (
 	Database *database
 	Server   *server
 	JWT      *jwt
+	Cookie   *cookie
 
 	logger *Logger
 )
@@ -47,6 +48,13 @@ func Initialize() {
 		CookieDomain:  e.COOKIE_DOMAIN,
 		CookiePath:    "/",
 		CookieName:    "refresh_token",
+	}
+
+	Cookie = &cookie{
+		CookieDomain:  e.COOKIE_DOMAIN,
+		CookiePath:    "/",
+		CookieName:    "refresh_token",
+		RefreshExpiry: JWT.RefreshExpiry,
 	}
 }
 

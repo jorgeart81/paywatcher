@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"paywatcher/src/application/usecases/user"
 	"paywatcher/src/config"
-	"paywatcher/src/domain/services"
 	"paywatcher/src/presentation/request"
 	"paywatcher/src/presentation/response"
 
@@ -12,15 +11,13 @@ import (
 )
 
 type AuthController struct {
-	authService    services.Authenticator
 	createUC       *user.RegisterUserUseCase
 	loginUC        *user.LoginUserUseCase
 	refreshTokenUC *user.RefreshTokenUseCase
 }
 
-func newAuthController(authService services.Authenticator, createUserUC user.RegisterUserUseCase, loginUserUC user.LoginUserUseCase, refreshTokenUC user.RefreshTokenUseCase) *AuthController {
+func newAuthController(createUserUC user.RegisterUserUseCase, loginUserUC user.LoginUserUseCase, refreshTokenUC user.RefreshTokenUseCase) *AuthController {
 	return &AuthController{
-		authService:    authService,
 		createUC:       &createUserUC,
 		loginUC:        &loginUserUC,
 		refreshTokenUC: &refreshTokenUC,
@@ -63,7 +60,7 @@ func (c AuthController) Create(ctx *gin.Context) {
 		return
 	}
 
-	refreshCookie := c.authService.GetRefreshCookie(tokenPairs.RefreshToken)
+	refreshCookie := config.GetRefreshCookie(tokenPairs.RefreshToken)
 	http.SetCookie(ctx.Writer, refreshCookie)
 
 	authResponse := response.NewAuthResponse(newUser, tokenPairs.AccessToken)
@@ -97,7 +94,7 @@ func (c AuthController) Login(ctx *gin.Context) {
 		return
 	}
 
-	refreshCookie := c.authService.GetRefreshCookie(tokenPairs.RefreshToken)
+	refreshCookie := config.GetRefreshCookie(tokenPairs.RefreshToken)
 	http.SetCookie(ctx.Writer, refreshCookie)
 
 	authResponse := response.NewAuthResponse(user, tokenPairs.AccessToken)
@@ -130,7 +127,7 @@ func (c AuthController) RefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	refreshCookie := c.authService.GetRefreshCookie(tokenPairs.RefreshToken)
+	refreshCookie := config.GetRefreshCookie(tokenPairs.RefreshToken)
 	http.SetCookie(ctx.Writer, refreshCookie)
 
 	refreshTokenResponse := response.NewRefreshTokenResponse(tokenPairs.AccessToken)

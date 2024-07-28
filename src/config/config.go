@@ -30,3 +30,9 @@ type jwt struct {
 	CookiePath    string
 	CookieName    string
 }
+type cookie struct {
+	CookieDomain  string
+	CookiePath    string
+	CookieName    string
+	RefreshExpiry time.Duration
+}

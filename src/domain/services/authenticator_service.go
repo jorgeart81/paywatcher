@@ -1,8 +1,6 @@
 package services
 
 import (
-	"net/http"
-
 	"github.com/google/uuid"
 )
 
@@ -24,6 +22,4 @@ type Claims struct {
 type Authenticator interface {
 	GenerateTokenPair(user *AuthUser) (TokenPairs, error)
 	VerifyToken(token string) (*Claims, error)
-	GetRefreshCookie(refreshToken string) *http.Cookie
-	GetExpiredRefreshCookie() *http.Cookie
 }
