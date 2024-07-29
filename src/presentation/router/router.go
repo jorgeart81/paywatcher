@@ -26,21 +26,12 @@ func Initialize(port int, host string, ginMode string, db *gorm.DB, corsAllowOri
 	router.Use(middlewares.EnableCORS(corsAllowOrigin))
 	logger.Info("cors enabled")
 
-	jwtConf := config.JWT
-	authService := &services.JWTAuth{
-		JWTIssuer:     jwtConf.Issuer,
-		JWTAudience:   jwtConf.Audience,
-		JWTSecret:     jwtConf.Secret,
-		JWTExpiry:     jwtConf.Expiry,
-		RefreshExpiry: jwtConf.RefreshExpiry,
-	}
-
-	controller.InitializeController(db, authService)
+	controller.InitializeController(db)
 	controllers := controller.GetControllers()
 
 	routes := &appRoutes{
 		authController: controllers.User,
-		authService:    authService,
+		authService:    services.JWTAuthService(),
 	}
 	routes.initializeRoutes(router)
 

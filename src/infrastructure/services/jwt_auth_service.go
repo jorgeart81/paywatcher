@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"paywatcher/src/config"
 	"paywatcher/src/domain/services"
 	"strings"
 	"time"
@@ -11,11 +12,22 @@ import (
 )
 
 type JWTAuth struct {
-	JWTIssuer     string
-	JWTAudience   string
-	JWTSecret     string
-	JWTExpiry     time.Duration
-	RefreshExpiry time.Duration
+	jwtIssuer     string
+	jwtAudience   string
+	jwtSecret     string
+	jwtExpiry     time.Duration
+	refreshExpiry time.Duration
+}
+
+func JWTAuthService() *JWTAuth {
+	jwtConf := config.JWT
+	return &JWTAuth{
+		jwtIssuer:     jwtConf.Issuer,
+		jwtAudience:   jwtConf.Audience,
+		jwtSecret:     jwtConf.Secret,
+		jwtExpiry:     jwtConf.Expiry,
+		refreshExpiry: jwtConf.RefreshExpiry,
+	}
 }
 
 type jwtClaims struct {
@@ -30,15 +42,15 @@ func (a *JWTAuth) GenerateTokenPair(user *services.AuthUser) (services.TokenPair
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": user.Username,
 		"sub":      user.ID,
-		"aud":      a.JWTAudience,
-		"iss":      a.JWTIssuer,
+		"aud":      a.jwtAudience,
+		"iss":      a.jwtIssuer,
 		"iat":      now.Unix(),
 		"type":     "JWT",
-		"exp":      now.Add(a.JWTExpiry).Unix(),
+		"exp":      now.Add(a.jwtExpiry).Unix(),
 	})
 
 	// Create a signed token
-	signedAccessToken, err := accessToken.SignedString([]byte(a.JWTSecret))
+	signedAccessToken, err := accessToken.SignedString([]byte(a.jwtSecret))
 	if err != nil {
 		return services.TokenPairs{}, err
 	}
@@ -48,11 +60,11 @@ func (a *JWTAuth) GenerateTokenPair(user *services.AuthUser) (services.TokenPair
 		"sub":  user.ID,
 		"iat":  now.Unix(),
 		"type": "JWT",
-		"exp":  now.Add(a.RefreshExpiry).Unix(),
+		"exp":  now.Add(a.refreshExpiry).Unix(),
 	})
 
 	// Create signed refresh token
-	signedRefreshToken, err := refreshToken.SignedString([]byte(a.JWTSecret))
+	signedRefreshToken, err := refreshToken.SignedString([]byte(a.jwtSecret))
 	if err != nil {
 		return services.TokenPairs{}, err
 	}
@@ -74,7 +86,7 @@ func (a *JWTAuth) VerifyToken(token string) (*services.Claims, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("unexpected signing method")
 		}
-		return []byte(a.JWTSecret), nil
+		return []byte(a.jwtSecret), nil
 	})
 
 	if err != nil {
