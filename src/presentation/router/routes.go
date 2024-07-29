@@ -32,7 +32,7 @@ func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
 
 	userController := ar.authController
 	{
-		api.POST("/register", userController.Create)
+		api.POST("/register", userController.Register)
 		api.POST("/login", userController.Login)
 	}
 

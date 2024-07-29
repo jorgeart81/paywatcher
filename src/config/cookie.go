@@ -5,7 +5,6 @@ import (
 	"time"
 )
 
-// GetRefreshCookie implements services.Authenticator.
 func GetRefreshCookie(refreshToken string) *http.Cookie {
 	return &http.Cookie{
 		Name:     Cookie.CookieName,
@@ -20,7 +19,6 @@ func GetRefreshCookie(refreshToken string) *http.Cookie {
 	}
 }
 
-// GetExpiredRefreshCookie implements services.Authenticator.
 func GetExpiredRefreshCookie() *http.Cookie {
 	return &http.Cookie{
 		Name:     Cookie.CookieName,

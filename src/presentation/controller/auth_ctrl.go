@@ -35,7 +35,7 @@ func newAuthController(createUserUC user.RegisterUserUseCase, loginUserUC user.L
 // @Success 201 {object} response.AuthResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Router /register [post]
-func (c AuthController) Create(ctx *gin.Context) {
+func (c AuthController) Register(ctx *gin.Context) {
 	var req request.RegisterUser
 
 	if err := ctx.ShouldBind(&req); err != nil {
