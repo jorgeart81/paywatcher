@@ -33,3 +33,19 @@ func NewRefreshTokenResponse(tokens interface{}) RefreshTokenResponse {
 		Tokens: tokens,
 	}
 }
+
+type UpdateUserResponse struct {
+	ID       uuid.UUID `json:"id"`
+	Email    string    `json:"email"`
+	Username string    `json:"username"`
+	Role     []string  `json:"role"`
+}
+
+func NewUpdateUserResponse(user *entity.UserEnt) UpdateUserResponse {
+	return UpdateUserResponse{
+		ID:       user.ID,
+		Email:    user.Email,
+		Username: user.Username,
+		Role:     user.Role,
+	}
+}
