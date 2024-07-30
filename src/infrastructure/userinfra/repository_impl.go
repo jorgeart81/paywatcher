@@ -38,3 +38,8 @@ func (u *UserRepositoryImpl) GetUserById(id uuid.UUID) (*entity.UserEnt, error) 
 func (u *UserRepositoryImpl) GetUserByEmail(email string) (*entity.UserEnt, error) {
 	return u.Datasource.GetUserByEmail(email)
 }
+
+// Save implements userdomain.UserRepository.
+func (u *UserRepositoryImpl) Update(user entity.UserEnt) (*entity.UserEnt, error) {
+	return u.Datasource.Update(user)
+}

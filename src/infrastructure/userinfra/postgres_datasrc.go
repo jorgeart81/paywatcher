@@ -65,3 +65,18 @@ func (pu *PostgresUserDatasrc) GetUserByEmail(email string) (*entity.UserEnt, er
 
 	return userSchema.ToDomain(), nil
 }
+
+// Save implements userdomain.UserDatasource.
+func (pu *PostgresUserDatasrc) Update(user entity.UserEnt) (*entity.UserEnt, error) {
+	db := pu.DB
+	userSchema := schemas.ToUserSchema(&user)
+
+	if err := db.Model(&schemas.User{}).Updates(userSchema).Error; err != nil {
+		if errors.Is(err, gorm.ErrRegistered) {
+			return nil, fmt.Errorf("user could not be updated")
+		}
+		return nil, err
+	}
+
+	return userSchema.ToDomain(), nil
+}

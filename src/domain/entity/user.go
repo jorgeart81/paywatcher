@@ -29,3 +29,13 @@ func (u *UserEnt) NewUser() *UserEnt {
 		Role:     []string{RoleUser},
 	}
 }
+
+func (u *UserEnt) UpdateUser() *UserEnt {
+	return &UserEnt{
+		ID:       uuid.New(),
+		Email:    u.Email,
+		Username: u.Username,
+		Password: u.Password,
+		Role:     []string{RoleUser},
+	}
+}
