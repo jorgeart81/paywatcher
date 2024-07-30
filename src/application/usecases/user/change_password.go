@@ -5,6 +5,8 @@ import (
 	"paywatcher/src/domain/entity"
 	"paywatcher/src/domain/repositories"
 	"paywatcher/src/domain/services"
+
+	"github.com/google/uuid"
 )
 
 type ChangePasswordUseCase struct {
@@ -19,11 +21,11 @@ func NewChangePasswordUseCase(userRepo repositories.UserRepository, hashService 
 	}
 }
 
-func (uc *ChangePasswordUseCase) Execute(email, oldPassword, newPassword string) (*entity.UserEnt, error) {
+func (uc *ChangePasswordUseCase) Execute(id uuid.UUID, oldPassword, newPassword string) (*entity.UserEnt, error) {
 	repo := uc.userRepo
 	hashService := uc.hashService
 
-	user, err := repo.GetUserByEmail(email)
+	user, err := repo.GetUserById(id)
 	if err != nil {
 		return nil, err
 	}

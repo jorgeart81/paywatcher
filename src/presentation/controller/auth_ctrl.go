@@ -45,6 +45,13 @@ func (c AuthController) Register(ctx *gin.Context) {
 		return
 	}
 
+	if err := req.ValidatePassword(); err != nil {
+		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
+			Message: err.Error(),
+		})
+		return
+	}
+
 	if err := req.ValidateRoles(); err != nil {
 		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
 			Message: err.Error(),

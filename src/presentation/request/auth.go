@@ -3,6 +3,7 @@ package request
 import (
 	"fmt"
 	"paywatcher/src/domain/entity"
+	"regexp"
 )
 
 type RegisterUser struct {
@@ -27,6 +28,35 @@ func (u *RegisterUser) ValidateRoles() error {
 		if _, ok := entity.UserAllowedRoles[role]; !ok {
 			return fmt.Errorf("invalid role: %s", role)
 		}
+	}
+	return nil
+}
+
+func (u *RegisterUser) ValidatePassword() error {
+	password := u.Password
+	//  "password must be at least 8 characters long, include one uppercase letter, one lowercase letter, one number, and one special character"
+	if len(password) < 8 {
+		return fmt.Errorf("password must be at least 8 characters long")
+	}
+
+	upper := regexp.MustCompile(`[A-Z]`)
+	if !upper.MatchString(password) {
+		return fmt.Errorf("password must include at least one uppercase letter")
+	}
+
+	lower := regexp.MustCompile(`[a-z]`)
+	if !lower.MatchString(password) {
+		return fmt.Errorf("password must include at least one lowercase letter")
+	}
+
+	number := regexp.MustCompile(`\d`)
+	if !number.MatchString(password) {
+		return fmt.Errorf("password must include at least one number")
+	}
+
+	special := regexp.MustCompile(`[@$!%*?&]`)
+	if !special.MatchString(password) {
+		return fmt.Errorf("password must include at least one special character %s", `(@$!%*?&)`)
 	}
 	return nil
 }
