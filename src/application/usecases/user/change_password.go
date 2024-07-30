@@ -11,17 +11,19 @@ import (
 
 type ChangePasswordUseCase struct {
 	userRepo    repositories.UserRepository
+	auth        services.Authenticator
 	hashService services.HashService
 }
 
-func NewChangePasswordUseCase(userRepo repositories.UserRepository, hashService services.HashService) LoginUserUseCase {
-	return LoginUserUseCase{
+func NewChangePasswordUseCase(userRepo repositories.UserRepository, auth services.Authenticator, hashService services.HashService) ChangePasswordUseCase {
+	return ChangePasswordUseCase{
 		userRepo:    userRepo,
 		hashService: hashService,
+		auth:        auth,
 	}
 }
 
-func (uc *ChangePasswordUseCase) Execute(id uuid.UUID, oldPassword, newPassword string) (*entity.UserEnt, error) {
+func (uc *ChangePasswordUseCase) Execute(id uuid.UUID, currentPassword, newPassword string) (*entity.UserEnt, error) {
 	repo := uc.userRepo
 	hashService := uc.hashService
 
@@ -30,8 +32,12 @@ func (uc *ChangePasswordUseCase) Execute(id uuid.UUID, oldPassword, newPassword 
 		return nil, err
 	}
 
-	if err := hashService.Compare(user.Password, oldPassword); err != nil {
+	if err := hashService.Compare(user.Password, currentPassword); err != nil {
 		return nil, errors.New("invalid credentials")
+	}
+
+	if err := hashService.Compare(user.Password, newPassword); err == nil {
+		return nil, errors.New("the new password must be different from the current one")
 	}
 
 	hashPass, err := hashService.Has(newPassword)
@@ -40,7 +46,7 @@ func (uc *ChangePasswordUseCase) Execute(id uuid.UUID, oldPassword, newPassword 
 	}
 
 	user.Password = hashPass
-	updatedUser, err := repo.Update(*user.UpdateUser())
+	updatedUser, err := repo.Update(id, *user.UpdateUser())
 	if err != nil {
 		return nil, err
 	}

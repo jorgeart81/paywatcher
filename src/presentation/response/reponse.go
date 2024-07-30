@@ -26,6 +26,7 @@ func SendSuccess(ctx *gin.Context, code int, data interface{}) {
 	ctx.JSON(code, data)
 }
 
+// Swagger
 type ErrorResponse struct {
 	Error GenericError `json:"error"`
 }

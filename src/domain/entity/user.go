@@ -32,7 +32,6 @@ func (u *UserEnt) NewUser() *UserEnt {
 
 func (u *UserEnt) UpdateUser() *UserEnt {
 	return &UserEnt{
-		ID:       uuid.New(),
 		Email:    u.Email,
 		Username: u.Username,
 		Password: u.Password,

@@ -38,7 +38,8 @@ func (m *AuthMiddleware) AuthRequired() gin.HandlerFunc {
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 
 		// Verify the token value
-		_, err := m.authService.VerifyToken(tokenString)
+		claims, err := m.authService.VerifyToken(tokenString)
+
 		if err != nil {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error": response.GenericError{
 				Message: err.Error(),
@@ -46,6 +47,7 @@ func (m *AuthMiddleware) AuthRequired() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
+		ctx.Set("ID", claims.ID)
 		ctx.Next()
 	}
 }

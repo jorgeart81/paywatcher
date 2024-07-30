@@ -36,7 +36,8 @@ func initAuthController(db *gorm.DB) *AuthController {
 	createUserUC := user.NewRegisterUserUseCase(userRepositoryImpl, authService, hashService)
 	loginUserUC := user.NewLoginUserUseCase(userRepositoryImpl, authService, hashService)
 	refreshTokenUC := user.NewRefreshTokenUseCase(userRepositoryImpl, authService)
+	changePasswordUC := user.NewChangePasswordUseCase(userRepositoryImpl, authService, hashService)
 
 	// Create and return the controller
-	return newAuthController(createUserUC, loginUserUC, refreshTokenUC)
+	return newAuthController(createUserUC, loginUserUC, refreshTokenUC, changePasswordUC)
 }
