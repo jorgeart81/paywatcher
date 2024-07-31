@@ -142,7 +142,6 @@ func (c AuthController) RefreshToken(ctx *gin.Context) {
 
 	refreshTokenResponse := response.NewRefreshTokenResponse(tokenPairs.AccessToken)
 	response.SendSuccess(ctx, http.StatusOK, refreshTokenResponse)
-
 }
 
 // @Summary Change Password
@@ -190,6 +189,18 @@ func (c AuthController) ChangePassword(ctx *gin.Context) {
 
 	updateUserResponse := response.NewUpdateUserResponse(user)
 	response.SendSuccess(ctx, http.StatusOK, updateUserResponse)
+}
+
+// @Summary Logout
+// @Description Log out of user account
+// @Tags User
+// @Produce json
+// @Success 204
+// @Failure 401 {object} response.GenericError
+// @Router /logout [get]
+func (c AuthController) Logout(ctx *gin.Context) {
+	http.SetCookie(ctx.Writer, config.GetExpiredRefreshCookie())
+	response.SendSuccess(ctx, http.StatusNoContent, nil)
 }
 
 // TODO: only for demo
