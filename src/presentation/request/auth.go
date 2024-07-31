@@ -81,3 +81,7 @@ type ChangePassword struct {
 func (u *ChangePassword) ValidatePassword() error {
 	return validatePassword(u.NewPassword)
 }
+
+type DisableUser struct {
+	Password string `form:"password" json:"password" binding:"required"`
+}

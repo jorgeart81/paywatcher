@@ -45,6 +45,7 @@ func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
 		authorized.GET("/refresh-token", userController.RefreshToken)
 		authorized.PUT("/change-password", userController.ChangePassword)
 		authorized.GET("/logout", userController.Logout)
+		authorized.PUT("/disable-user", userController.DisableUser)
 	}
 
 	// use ginSwagger middleware to serve the API docs

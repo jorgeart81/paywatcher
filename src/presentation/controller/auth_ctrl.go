@@ -6,6 +6,7 @@ import (
 	"paywatcher/src/config"
 	"paywatcher/src/presentation/request"
 	"paywatcher/src/presentation/response"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -16,14 +17,17 @@ type AuthController struct {
 	loginUC          *user.LoginUserUseCase
 	refreshTokenUC   *user.RefreshTokenUseCase
 	changePasswordUC *user.ChangePasswordUseCase
+	disableUserUC    *user.DisableUserUseCase
 }
 
-func newAuthController(createUserUC user.RegisterUserUseCase, loginUserUC user.LoginUserUseCase, refreshTokenUC user.RefreshTokenUseCase, changePasswordUC user.ChangePasswordUseCase) *AuthController {
+func newAuthController(createUserUC user.RegisterUserUseCase, loginUserUC user.LoginUserUseCase, refreshTokenUC user.RefreshTokenUseCase,
+	changePasswordUC user.ChangePasswordUseCase, disableUserUC user.DisableUserUseCase) *AuthController {
 	return &AuthController{
 		createUC:         &createUserUC,
 		loginUC:          &loginUserUC,
 		refreshTokenUC:   &refreshTokenUC,
 		changePasswordUC: &changePasswordUC,
+		disableUserUC:    &disableUserUC,
 	}
 }
 
@@ -85,6 +89,7 @@ func (c AuthController) Register(ctx *gin.Context) {
 // @Param request body request.LoginUser true "Request body"
 // @Success 200 {object} response.AuthResponse
 // @Failure 400 {object} response.ErrorResponse
+// @Failure 401 {object} response.ErrorResponse
 // @Router /login [post]
 func (c AuthController) Login(ctx *gin.Context) {
 	var req *request.LoginUser
@@ -98,6 +103,12 @@ func (c AuthController) Login(ctx *gin.Context) {
 
 	user, tokenPairs, err := c.loginUC.Execute(req.Email, req.Password)
 	if err != nil {
+		if strings.Contains(err.Error(), "unauthorized") {
+			response.SendError(ctx, http.StatusUnauthorized, &response.GenericError{
+				Message: err.Error(),
+			})
+			return
+		}
 		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
 			Message: err.Error(),
 		})
@@ -199,6 +210,53 @@ func (c AuthController) ChangePassword(ctx *gin.Context) {
 // @Failure 401 {object} response.GenericError
 // @Router /logout [get]
 func (c AuthController) Logout(ctx *gin.Context) {
+	http.SetCookie(ctx.Writer, config.GetExpiredRefreshCookie())
+	response.SendSuccess(ctx, http.StatusNoContent, nil)
+}
+
+// @Summary Change Password
+// @Description Change a new password
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param request body request.DisableUser true "Request body"
+// @Success 204
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /disable-user [post]
+func (c AuthController) DisableUser(ctx *gin.Context) {
+	var req request.DisableUser
+
+	if err := ctx.ShouldBind(&req); err != nil {
+		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
+			Message: err.Error(),
+		})
+		return
+	}
+
+	id, ok := ctx.Value("ID").(uuid.UUID)
+	if !ok {
+		response.SendError(ctx, http.StatusInternalServerError, &response.GenericError{
+			Message: "id not found",
+		})
+		return
+	}
+
+	isDisabled, err := c.disableUserUC.Execute(id, req.Password)
+	if err != nil {
+		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
+			Message: err.Error(),
+		})
+		return
+	}
+
+	if !isDisabled {
+		response.SendError(ctx, http.StatusInternalServerError, &response.GenericError{
+			Message: "the request could not be processed",
+		})
+		return
+	}
+
 	http.SetCookie(ctx.Writer, config.GetExpiredRefreshCookie())
 	response.SendSuccess(ctx, http.StatusNoContent, nil)
 }
