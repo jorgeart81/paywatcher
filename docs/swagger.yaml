@@ -9,6 +9,13 @@ definitions:
     - currentPassword
     - newPassword
     type: object
+  request.DisableUser:
+    properties:
+      password:
+        type: string
+    required:
+    - password
+    type: object
   request.LoginUser:
     properties:
       email:
@@ -112,6 +119,34 @@ paths:
       summary: Change Password
       tags:
       - User
+  /disable-user:
+    post:
+      consumes:
+      - application/json
+      description: Change a new password
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.DisableUser'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Change Password
+      tags:
+      - User
   /login:
     post:
       consumes:
@@ -133,6 +168,10 @@ paths:
             $ref: '#/definitions/response.AuthResponse'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Login user
