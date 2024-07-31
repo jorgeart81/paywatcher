@@ -29,6 +29,10 @@ func (uc *LoginUserUseCase) Execute(email, password string) (*entity.UserEnt, se
 		return nil, services.TokenPairs{}, err
 	}
 
+	if !user.Active {
+		return nil, services.TokenPairs{}, errors.New("invalid credentials")
+	}
+
 	if err := uc.hashService.Compare(user.Password, password); err != nil {
 		return nil, services.TokenPairs{}, errors.New("invalid credentials")
 	}

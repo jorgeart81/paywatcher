@@ -36,15 +36,15 @@ func (p *PotsgresDB) Connect() (*gorm.DB, error) {
 	logger.Info("migrating schemas")
 	msgMigrationErr := "postgres automigration error"
 
-	if err := db.AutoMigrate(schemas.User{}); err != nil {
+	if err := db.AutoMigrate(&schemas.User{}); err != nil {
 		logger.Errorf("%s %v", msgMigrationErr, err)
 		return nil, err
 	}
-	if err := db.AutoMigrate(schemas.Payment{}); err != nil {
+	if err := db.AutoMigrate(&schemas.Payment{}); err != nil {
 		logger.Errorf("%s %v", msgMigrationErr, err)
 		return nil, err
 	}
-	if err := db.AutoMigrate(schemas.Category{}); err != nil {
+	if err := db.AutoMigrate(&schemas.Category{}); err != nil {
 		logger.Errorf("%s %v", msgMigrationErr, err)
 		return nil, err
 	}

@@ -8,6 +8,7 @@ type UserEnt struct {
 	Username string    `json:"username"`
 	Password string    `json:"password"`
 	Role     []string  `json:"role"`
+	Active   bool      `json:"active"`
 }
 
 const (
@@ -27,6 +28,7 @@ func (u *UserEnt) NewUser() *UserEnt {
 		Username: u.Username,
 		Password: u.Password,
 		Role:     []string{RoleUser},
+		Active:   true,
 	}
 }
 
@@ -35,6 +37,7 @@ func (u *UserEnt) UpdateUser() *UserEnt {
 		Email:    u.Email,
 		Username: u.Username,
 		Password: u.Password,
-		Role:     []string{RoleUser},
+		Role:     u.Role,
+		Active:   u.Active,
 	}
 }

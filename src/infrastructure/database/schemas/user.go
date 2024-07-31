@@ -13,6 +13,7 @@ type User struct {
 	Username  string    `gorm:"column:username"`
 	Password  string    `gorm:"column:password"`
 	Role      []string  `gorm:"column:role;serializer:json"`
+	Active    bool      `gorm:"column:active"`
 	CreatedAt time.Time `gorm:"column:created_at"`
 	UpdatedAt time.Time `gorm:"column:updated_at"`
 }
@@ -24,6 +25,7 @@ func ToUserSchema(user *entity.UserEnt) *User {
 		Email:    user.Email,
 		Password: user.Password,
 		Role:     user.Role,
+		Active:   user.Active,
 	}
 }
 
@@ -34,5 +36,6 @@ func (e *User) ToDomain() *entity.UserEnt {
 		Email:    e.Email,
 		Password: e.Password,
 		Role:     e.Role,
+		Active:   e.Active,
 	}
 }

@@ -1,6 +1,7 @@
 package user
 
 import (
+	"errors"
 	"paywatcher/src/domain/repositories"
 	"paywatcher/src/domain/services"
 )
@@ -28,6 +29,10 @@ func (r *RefreshTokenUseCase) Execute(refreshToken string) (services.TokenPairs,
 	user, err := r.userRepo.GetUserById(claims.ID)
 	if err != nil {
 		return services.TokenPairs{}, err
+	}
+
+	if !user.Active {
+		return services.TokenPairs{}, errors.New("invalid credentials")
 	}
 
 	jwtUser := services.AuthUser{
