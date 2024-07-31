@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // var _ userdomain.UserDatasource = &PostgresUserDatasrc{}
@@ -69,9 +70,14 @@ func (pu *PostgresUserDatasrc) GetUserByEmail(email string) (*entity.UserEnt, er
 // Save implements userdomain.UserDatasource.
 func (pu *PostgresUserDatasrc) Update(id uuid.UUID, user entity.UserEnt) (*entity.UserEnt, error) {
 	db := pu.DB
-	userSchema := schemas.ToUserSchema(&user)
+	userSchema := schemas.User{}
+	entityToUserSchema := schemas.ToUserSchema(&user)
 
-	if err := db.Model(&schemas.User{}).Where("id = ?", id).Updates(userSchema).Error; err != nil {
+	if err := db.Model(&userSchema).
+		Clauses(clause.Returning{}).
+		Where("id = ?", id).
+		Select("username", "email", "password", "role", "active").
+		Updates(entityToUserSchema).Error; err != nil {
 		if errors.Is(err, gorm.ErrRegistered) {
 			return nil, fmt.Errorf("user could not be updated")
 		}
