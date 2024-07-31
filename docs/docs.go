@@ -16,7 +16,7 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/change-password": {
-            "post": {
+            "put": {
                 "description": "Change a new password",
                 "consumes": [
                     "application/json"
@@ -62,7 +62,7 @@ const docTemplate = `{
             }
         },
         "/disable-user": {
-            "post": {
+            "put": {
                 "description": "Change a new password",
                 "consumes": [
                     "application/json"

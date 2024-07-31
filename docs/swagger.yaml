@@ -90,7 +90,7 @@ info:
   contact: {}
 paths:
   /change-password:
-    post:
+    put:
       consumes:
       - application/json
       description: Change a new password
@@ -120,7 +120,7 @@ paths:
       tags:
       - User
   /disable-user:
-    post:
+    put:
       consumes:
       - application/json
       description: Change a new password

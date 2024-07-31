@@ -164,7 +164,7 @@ func (c AuthController) RefreshToken(ctx *gin.Context) {
 // @Success 200 {object} response.UpdateUserResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse
-// @Router /change-password [post]
+// @Router /change-password [put]
 func (c AuthController) ChangePassword(ctx *gin.Context) {
 	var req request.ChangePassword
 
@@ -223,7 +223,7 @@ func (c AuthController) Logout(ctx *gin.Context) {
 // @Success 204
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse
-// @Router /disable-user [post]
+// @Router /disable-user [put]
 func (c AuthController) DisableUser(ctx *gin.Context) {
 	var req request.DisableUser
 
