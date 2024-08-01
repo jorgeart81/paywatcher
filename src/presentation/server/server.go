@@ -16,7 +16,6 @@ func Start() {
 		}
 	}()
 
-	config.Initialize()
 	logger = config.GetLogger("server")
 	logger.Info("starting the server")
 

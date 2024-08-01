@@ -14,7 +14,8 @@ var (
 	logger *Logger
 )
 
-func Initialize() {
+// init is a special function that runs automatically when the package is loaded
+func init() {
 	e, err := loadEnv()
 	if err != nil {
 		log.Fatal(err)
