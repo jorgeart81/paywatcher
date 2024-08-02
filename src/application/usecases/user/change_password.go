@@ -46,7 +46,7 @@ func (uc *ChangePasswordUseCase) Execute(id uuid.UUID, currentPassword, newPassw
 	}
 
 	user.Password = hashPass
-	updatedUser, err := repo.Update(id, *user.UpdateUser())
+	updatedUser, err := repo.Update(id, *user)
 	if err != nil {
 		return nil, err
 	}

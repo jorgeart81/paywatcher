@@ -8,10 +8,10 @@ import (
 
 type Category struct {
 	ID        uuid.UUID `json:"id" gorm:"primaryKey;type:uuid"`
-	Name      string    `json:"name"`
-	Priority  uint      `json:"priority"`
-	Recurrent bool      `json:"recurrent"`
-	Notify    bool      `json:"notify"`
-	CreatedAt time.Time `json:"-"`
-	UpdatedAt time.Time `json:"-"`
+	Name      string    `gorm:"column:name;unique"`
+	Priority  uint      `gorm:"column:priority"`
+	Recurrent bool      `gorm:"column:recurrent"`
+	Notify    bool      `gorm:"column:notify"`
+	CreatedAt time.Time `gorm:"column:created_at"`
+	UpdatedAt time.Time `gorm:"column:updated_at"`
 }

@@ -34,7 +34,7 @@ func (uc *DisableUserUseCase) Execute(id uuid.UUID, password string) (bool, erro
 	}
 	// Change status to inactive
 	user.Active = false
-	userDB, err := repo.Update(id, *user.UpdateUser())
+	userDB, err := repo.Update(id, *user)
 	if err != nil {
 		return false, err
 	}

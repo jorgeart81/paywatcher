@@ -22,22 +22,8 @@ var UserAllowedRoles = map[string]bool{
 }
 
 func (u *UserEnt) NewUser() *UserEnt {
-	return &UserEnt{
-		ID:       uuid.New(),
-		Email:    u.Email,
-		Username: u.Username,
-		Password: u.Password,
-		Role:     []string{RoleUser},
-		Active:   true,
-	}
-}
-
-func (u *UserEnt) UpdateUser() *UserEnt {
-	return &UserEnt{
-		Email:    u.Email,
-		Username: u.Username,
-		Password: u.Password,
-		Role:     u.Role,
-		Active:   u.Active,
-	}
+	u.ID = uuid.New()
+	u.Role = []string{RoleUser}
+	u.Active = true
+	return u
 }
