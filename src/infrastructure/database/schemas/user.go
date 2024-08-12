@@ -9,13 +9,15 @@ import (
 
 type User struct {
 	ID        uuid.UUID `json:"id" gorm:"primaryKey;type:uuid"`
-	Email     string    `gorm:"column:email;unique"`
+	Email     string    `gorm:"column:email;unique;not null"`
 	Username  string    `gorm:"column:username"`
 	Password  string    `gorm:"column:password"`
 	Role      []string  `gorm:"column:role;serializer:json"`
-	Active    bool      `gorm:"column:active"`
+	Active    bool      `gorm:"column:active;default:true"`
 	CreatedAt time.Time `gorm:"column:created_at"`
 	UpdatedAt time.Time `gorm:"column:updated_at"`
+
+	Categories []Category `gorm:"foreignKey:UserID"`
 }
 
 func ToUserSchema(user *entity.UserEnt) *User {
