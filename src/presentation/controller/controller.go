@@ -2,8 +2,9 @@ package controller
 
 import (
 	"paywatcher/src/application/usecases/user"
+	"paywatcher/src/infrastructure/datasource"
+	"paywatcher/src/infrastructure/repositories"
 	"paywatcher/src/infrastructure/services"
-	"paywatcher/src/infrastructure/userinfra"
 
 	"gorm.io/gorm"
 )
@@ -30,8 +31,8 @@ func initAuthController(db *gorm.DB) *AuthController {
 	authService := services.JWTAuthService()
 	hashService := services.NewBcryptService()
 	// Create datasource, repository and use case
-	userDatasource := &userinfra.PostgresUserDatasrc{DB: db}
-	userRepositoryImpl := userinfra.NewUserRepository(userDatasource)
+	userDatasource := &datasource.PostgresUserDatasrc{DB: db}
+	userRepositoryImpl := repositories.NewUserRepository(userDatasource)
 
 	createUserUC := user.NewRegisterUserUseCase(userRepositoryImpl, authService, hashService)
 	loginUserUC := user.NewLoginUserUseCase(userRepositoryImpl, authService, hashService)

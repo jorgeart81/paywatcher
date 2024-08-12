@@ -1,4 +1,4 @@
-package userinfra
+package repositories
 
 import (
 	"paywatcher/src/domain/datasource"

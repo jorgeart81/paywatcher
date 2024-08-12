@@ -1,4 +1,4 @@
-package userinfra
+package datasource
 
 import (
 	"errors"
