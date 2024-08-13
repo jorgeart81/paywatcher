@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"paywatcher/src/application/usecases/user"
 	"paywatcher/src/config"
+	"paywatcher/src/infrastructure/middlewares"
 	"paywatcher/src/presentation/request"
 	"paywatcher/src/presentation/response"
 	"strings"
@@ -234,7 +235,7 @@ func (c AuthController) DisableUser(ctx *gin.Context) {
 		return
 	}
 
-	id, ok := ctx.Value("ID").(uuid.UUID)
+	id, ok := ctx.Value(middlewares.UserIDKey).(uuid.UUID)
 	if !ok {
 		response.SendError(ctx, http.StatusInternalServerError, &response.GenericError{
 			Message: "id not found",

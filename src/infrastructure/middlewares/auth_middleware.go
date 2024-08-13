@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const UserIDKey = "userID"
+
 type AuthMiddleware struct {
 	authService services.Authenticator
 }
@@ -47,7 +49,7 @@ func (m *AuthMiddleware) AuthRequired() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
-		ctx.Set("ID", claims.ID)
+		ctx.Set(UserIDKey, claims.ID)
 		ctx.Next()
 	}
 }

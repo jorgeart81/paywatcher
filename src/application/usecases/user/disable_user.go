@@ -28,6 +28,10 @@ func (uc *DisableUserUseCase) Execute(id uuid.UUID, password string) (bool, erro
 	if err != nil {
 		return false, err
 	}
+
+	if !user.Active {
+		return false, errors.New("invalid credentials")
+	}
 	// Confirm with password
 	if err := hashService.Compare(user.Password, password); err != nil {
 		return false, errors.New("invalid credentials")
