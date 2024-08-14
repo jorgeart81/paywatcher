@@ -6,14 +6,14 @@ import (
 	"regexp"
 )
 
-type RegisterUser struct {
+type RegisterUserReq struct {
 	Email    string   `form:"email" json:"email" binding:"email,required"`
 	Username string   `form:"usename" json:"username" binding:"required"`
 	Password string   `form:"password" json:"password" binding:"required"`
 	Role     []string `form:"role" json:"role,omitempty"`
 }
 
-func (u *RegisterUser) ToUserEntity() *entity.UserEnt {
+func (u *RegisterUserReq) ToUserEntity() *entity.UserEnt {
 	return &entity.UserEnt{
 		Email:    u.Email,
 		Username: u.Username,
@@ -22,11 +22,11 @@ func (u *RegisterUser) ToUserEntity() *entity.UserEnt {
 	}
 }
 
-func (u *RegisterUser) ValidateRoles() error {
+func (u *RegisterUserReq) ValidateRoles() error {
 	return validateRole(u.Role)
 }
 
-func (u *RegisterUser) ValidatePassword() error {
+func (u *RegisterUserReq) ValidatePassword() error {
 	return validatePassword(u.Password)
 }
 
@@ -68,20 +68,24 @@ func validatePassword(password string) error {
 	return nil
 }
 
-type LoginUser struct {
+type LoginUserReq struct {
 	Email    string `form:"email" json:"email" binding:"email,required"`
 	Password string `form:"password" json:"password" binding:"required"`
 }
 
-type ChangePassword struct {
+type RefreshTokenReq struct {
+	RefreshToken []string `form:"refreshToken" json:"refreshToken,omitempty"`
+}
+
+type ChangePasswordReq struct {
 	CurrentPassword string `form:"currentPassword" json:"currentPassword" binding:"required"`
 	NewPassword     string `form:"newPassword" json:"newPassword" binding:"required"`
 }
 
-func (u *ChangePassword) ValidatePassword() error {
+func (u *ChangePasswordReq) ValidatePassword() error {
 	return validatePassword(u.NewPassword)
 }
 
-type DisableUser struct {
+type DisableUserReq struct {
 	Password string `form:"password" json:"password" binding:"required"`
 }
