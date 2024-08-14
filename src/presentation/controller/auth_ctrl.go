@@ -39,12 +39,12 @@ func newAuthController(createUserUC user.RegisterUserUseCase, loginUserUC user.L
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param request body request.RegisterUser true "Request body"
+// @Param request body request.RegisterUserReq true "Request body"
 // @Success 201 {object} response.AuthResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Router /register [post]
 func (c AuthController) Register(ctx *gin.Context) {
-	var req request.RegisterUser
+	var req request.RegisterUserReq
 
 	if err := ctx.ShouldBind(&req); err != nil {
 		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
@@ -87,13 +87,13 @@ func (c AuthController) Register(ctx *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param request body request.LoginUser true "Request body"
+// @Param request body request.LoginUserReq true "Request body"
 // @Success 200 {object} response.AuthResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 401 {object} response.ErrorResponse
 // @Router /login [post]
 func (c AuthController) Login(ctx *gin.Context) {
-	var req *request.LoginUser
+	var req *request.LoginUserReq
 
 	if err := ctx.ShouldBind(&req); err != nil {
 		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
@@ -130,7 +130,7 @@ func (c AuthController) Login(ctx *gin.Context) {
 // @Success 200 {object} response.RefreshTokenResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 401 {object} response.ErrorResponse
-// @Router /refresh-token [get]
+// @Router /refresh-token [post]
 func (c AuthController) RefreshToken(ctx *gin.Context) {
 	cookieName := config.JWT.CookieName
 	refreshToken, err := ctx.Cookie(cookieName)
@@ -161,13 +161,13 @@ func (c AuthController) RefreshToken(ctx *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param request body request.ChangePassword true "Request body"
+// @Param request body request.ChangePasswordReq true "Request body"
 // @Success 200 {object} response.UpdateUserResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse
 // @Router /change-password [put]
 func (c AuthController) ChangePassword(ctx *gin.Context) {
-	var req request.ChangePassword
+	var req request.ChangePasswordReq
 
 	if err := ctx.ShouldBind(&req); err != nil {
 		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
@@ -220,13 +220,13 @@ func (c AuthController) Logout(ctx *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param request body request.DisableUser true "Request body"
+// @Param request body request.DisableUserReq true "Request body"
 // @Success 204
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse
 // @Router /disable-user [put]
 func (c AuthController) DisableUser(ctx *gin.Context) {
-	var req request.DisableUser
+	var req request.DisableUserReq
 
 	if err := ctx.ShouldBind(&req); err != nil {
 		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
