@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.ChangePassword"
+                            "$ref": "#/definitions/request.ChangePasswordReq"
                         }
                     }
                 ],
@@ -81,7 +81,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.DisableUser"
+                            "$ref": "#/definitions/request.DisableUserReq"
                         }
                     }
                 ],
@@ -124,7 +124,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.LoginUser"
+                            "$ref": "#/definitions/request.LoginUserReq"
                         }
                     }
                 ],
@@ -174,7 +174,7 @@ const docTemplate = `{
             }
         },
         "/refresh-token": {
-            "get": {
+            "post": {
                 "description": "Create a new refresh token",
                 "produces": [
                     "application/json"
@@ -225,7 +225,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RegisterUser"
+                            "$ref": "#/definitions/request.RegisterUserReq"
                         }
                     }
                 ],
@@ -247,7 +247,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "request.ChangePassword": {
+        "request.ChangePasswordReq": {
             "type": "object",
             "required": [
                 "currentPassword",
@@ -262,7 +262,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.DisableUser": {
+        "request.DisableUserReq": {
             "type": "object",
             "required": [
                 "password"
@@ -273,7 +273,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.LoginUser": {
+        "request.LoginUserReq": {
             "type": "object",
             "required": [
                 "email",
@@ -288,7 +288,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.RegisterUser": {
+        "request.RegisterUserReq": {
             "type": "object",
             "required": [
                 "email",

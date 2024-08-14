@@ -1,5 +1,5 @@
 definitions:
-  request.ChangePassword:
+  request.ChangePasswordReq:
     properties:
       currentPassword:
         type: string
@@ -9,14 +9,14 @@ definitions:
     - currentPassword
     - newPassword
     type: object
-  request.DisableUser:
+  request.DisableUserReq:
     properties:
       password:
         type: string
     required:
     - password
     type: object
-  request.LoginUser:
+  request.LoginUserReq:
     properties:
       email:
         type: string
@@ -26,7 +26,7 @@ definitions:
     - email
     - password
     type: object
-  request.RegisterUser:
+  request.RegisterUserReq:
     properties:
       email:
         type: string
@@ -100,7 +100,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/request.ChangePassword'
+          $ref: '#/definitions/request.ChangePasswordReq'
       produces:
       - application/json
       responses:
@@ -130,7 +130,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/request.DisableUser'
+          $ref: '#/definitions/request.DisableUserReq'
       produces:
       - application/json
       responses:
@@ -158,7 +158,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/request.LoginUser'
+          $ref: '#/definitions/request.LoginUserReq'
       produces:
       - application/json
       responses:
@@ -193,7 +193,7 @@ paths:
       tags:
       - User
   /refresh-token:
-    get:
+    post:
       description: Create a new refresh token
       produces:
       - application/json
@@ -224,7 +224,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/request.RegisterUser'
+          $ref: '#/definitions/request.RegisterUserReq'
       produces:
       - application/json
       responses:

@@ -24,7 +24,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.ChangePassword"
+                            "$ref": "#/definitions/request.ChangePasswordReq"
                         }
                     }
                 ],
@@ -70,7 +70,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.DisableUser"
+                            "$ref": "#/definitions/request.DisableUserReq"
                         }
                     }
                 ],
@@ -113,7 +113,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.LoginUser"
+                            "$ref": "#/definitions/request.LoginUserReq"
                         }
                     }
                 ],
@@ -163,7 +163,7 @@
             }
         },
         "/refresh-token": {
-            "get": {
+            "post": {
                 "description": "Create a new refresh token",
                 "produces": [
                     "application/json"
@@ -214,7 +214,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.RegisterUser"
+                            "$ref": "#/definitions/request.RegisterUserReq"
                         }
                     }
                 ],
@@ -236,7 +236,7 @@
         }
     },
     "definitions": {
-        "request.ChangePassword": {
+        "request.ChangePasswordReq": {
             "type": "object",
             "required": [
                 "currentPassword",
@@ -251,7 +251,7 @@
                 }
             }
         },
-        "request.DisableUser": {
+        "request.DisableUserReq": {
             "type": "object",
             "required": [
                 "password"
@@ -262,7 +262,7 @@
                 }
             }
         },
-        "request.LoginUser": {
+        "request.LoginUserReq": {
             "type": "object",
             "required": [
                 "email",
@@ -277,7 +277,7 @@
                 }
             }
         },
-        "request.RegisterUser": {
+        "request.RegisterUserReq": {
             "type": "object",
             "required": [
                 "email",
