@@ -34,6 +34,7 @@ func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
 	{
 		api.POST("/register", userController.Register)
 		api.POST("/login", userController.Login)
+		api.POST("/refresh-token", userController.RefreshToken)
 	}
 
 	{
@@ -42,7 +43,6 @@ func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
 		authorized.Use(authMiddleware.AuthRequired())
 
 		authorized.GET("/test-auth", userController.Index)
-		authorized.GET("/refresh-token", userController.RefreshToken)
 		authorized.PUT("/change-password", userController.ChangePassword)
 		authorized.GET("/logout", userController.Logout)
 		authorized.PUT("/disable-user", userController.DisableUser)
