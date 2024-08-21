@@ -1,14 +1,19 @@
 package entity
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type UserEnt struct {
-	ID       uuid.UUID `json:"id"`
-	Email    string    `json:"email"`
-	Username string    `json:"username"`
-	Password string    `json:"password"`
-	Role     []string  `json:"role"`
-	Active   bool      `json:"active"`
+	ID        uuid.UUID  `json:"id"`
+	Email     string     `json:"email"`
+	Username  string     `json:"username"`
+	Password  string     `json:"password"`
+	Role      []string   `json:"role"`
+	Active    bool       `json:"active"`
+	DeletedAt *time.Time `json:"deletedAt"`
 }
 
 const (

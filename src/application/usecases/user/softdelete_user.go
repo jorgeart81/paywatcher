@@ -29,7 +29,7 @@ func (uc *SoftDeleteUserUseCase) Execute(id uuid.UUID, password string) error {
 		return err
 	}
 
-	if !user.Active {
+	if user.DeletedAt != nil || !user.Active {
 		return errors.New("invalid credentials")
 	}
 	// Confirm with password

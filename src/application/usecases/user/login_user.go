@@ -29,7 +29,7 @@ func (uc *LoginUserUseCase) Execute(email, password string) (*entity.UserEnt, se
 		return nil, services.TokenPairs{}, err
 	}
 
-	if !user.Active {
+	if user.DeletedAt != nil || !user.Active {
 		return nil, services.TokenPairs{}, errors.New("unauthorized")
 	}
 

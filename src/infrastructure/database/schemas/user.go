@@ -23,22 +23,24 @@ type User struct {
 
 func ToUserSchema(user *entity.UserEnt) *User {
 	return &User{
-		ID:       user.ID,
-		Username: user.Username,
-		Email:    user.Email,
-		Password: user.Password,
-		Role:     user.Role,
-		Active:   user.Active,
+		ID:        user.ID,
+		Username:  user.Username,
+		Email:     user.Email,
+		Password:  user.Password,
+		Role:      user.Role,
+		Active:    user.Active,
+		DeletedAt: user.DeletedAt,
 	}
 }
 
 func (e *User) ToDomain() *entity.UserEnt {
 	return &entity.UserEnt{
-		ID:       e.ID,
-		Username: e.Username,
-		Email:    e.Email,
-		Password: e.Password,
-		Role:     e.Role,
-		Active:   e.Active,
+		ID:        e.ID,
+		Username:  e.Username,
+		Email:     e.Email,
+		Password:  e.Password,
+		Role:      e.Role,
+		Active:    e.Active,
+		DeletedAt: e.DeletedAt,
 	}
 }
