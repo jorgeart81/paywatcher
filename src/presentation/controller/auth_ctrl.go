@@ -18,17 +18,17 @@ type AuthController struct {
 	loginUC          *user.LoginUserUseCase
 	refreshTokenUC   *user.RefreshTokenUseCase
 	changePasswordUC *user.ChangePasswordUseCase
-	disableUserUC    *user.DisableUserUseCase
+	softDeleteUserUC *user.SoftDeleteUserUseCase
 }
 
 func newAuthController(createUserUC user.RegisterUserUseCase, loginUserUC user.LoginUserUseCase, refreshTokenUC user.RefreshTokenUseCase,
-	changePasswordUC user.ChangePasswordUseCase, disableUserUC user.DisableUserUseCase) *AuthController {
+	changePasswordUC user.ChangePasswordUseCase, SoftDeleteUserUC user.SoftDeleteUserUseCase) *AuthController {
 	return &AuthController{
 		createUC:         &createUserUC,
 		loginUC:          &loginUserUC,
 		refreshTokenUC:   &refreshTokenUC,
 		changePasswordUC: &changePasswordUC,
-		disableUserUC:    &disableUserUC,
+		softDeleteUserUC: &SoftDeleteUserUC,
 	}
 }
 
@@ -36,13 +36,13 @@ func newAuthController(createUserUC user.RegisterUserUseCase, loginUserUC user.L
 
 // @Summary Register user
 // @Description Register a new user
-// @Tags User
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param request body request.RegisterUserReq true "Request body"
 // @Success 201 {object} response.AuthResponse
 // @Failure 400 {object} response.ErrorResponse
-// @Router /register [post]
+// @Router /auth/register [post]
 func (c AuthController) Register(ctx *gin.Context) {
 	var req request.RegisterUserReq
 
@@ -82,16 +82,16 @@ func (c AuthController) Register(ctx *gin.Context) {
 	response.SendSuccess(ctx, http.StatusCreated, authResponse)
 }
 
-// @Summary Login user
+// @Summary Login
 // @Description User login with email and password
-// @Tags User
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param request body request.LoginUserReq true "Request body"
 // @Success 200 {object} response.AuthResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 401 {object} response.ErrorResponse
-// @Router /login [post]
+// @Router /auth/login [post]
 func (c AuthController) Login(ctx *gin.Context) {
 	var req *request.LoginUserReq
 
@@ -125,12 +125,12 @@ func (c AuthController) Login(ctx *gin.Context) {
 
 // @Summary Refresh Token
 // @Description Create a new refresh token
-// @Tags User
+// @Tags Auth
 // @Produce json
 // @Success 200 {object} response.RefreshTokenResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 401 {object} response.ErrorResponse
-// @Router /refresh-token [post]
+// @Router /auth/refresh-token [post]
 func (c AuthController) RefreshToken(ctx *gin.Context) {
 	cookieName := config.JWT.CookieName
 	refreshToken, err := ctx.Cookie(cookieName)
@@ -158,14 +158,14 @@ func (c AuthController) RefreshToken(ctx *gin.Context) {
 
 // @Summary Change Password
 // @Description Change a new password
-// @Tags User
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param request body request.ChangePasswordReq true "Request body"
 // @Success 200 {object} response.UpdateUserResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse
-// @Router /change-password [put]
+// @Router /auth/change-password [patch]
 func (c AuthController) ChangePassword(ctx *gin.Context) {
 	var req request.ChangePasswordReq
 
@@ -183,7 +183,7 @@ func (c AuthController) ChangePassword(ctx *gin.Context) {
 		return
 	}
 
-	id, ok := ctx.Value("ID").(uuid.UUID)
+	id, ok := ctx.Value(middlewares.UserIDKey).(uuid.UUID)
 	if !ok {
 		response.SendError(ctx, http.StatusInternalServerError, &response.GenericError{
 			Message: "id not found",
@@ -205,28 +205,28 @@ func (c AuthController) ChangePassword(ctx *gin.Context) {
 
 // @Summary Logout
 // @Description Log out of user account
-// @Tags User
+// @Tags Auth
 // @Produce json
 // @Success 204
 // @Failure 401 {object} response.GenericError
-// @Router /logout [get]
+// @Router /auth/logout [get]
 func (c AuthController) Logout(ctx *gin.Context) {
 	http.SetCookie(ctx.Writer, config.GetExpiredRefreshCookie())
 	response.SendSuccess(ctx, http.StatusNoContent, nil)
 }
 
-// @Summary Change Password
-// @Description Change a new password
-// @Tags User
+// @Summary Soft Delete
+// @Description Soft delete of user account
+// @Tags Auth
 // @Accept json
 // @Produce json
-// @Param request body request.DisableUserReq true "Request body"
+// @Param request body request.SoftDeleteUserReq true "Request body"
 // @Success 204
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse
-// @Router /disable-user [put]
-func (c AuthController) DisableUser(ctx *gin.Context) {
-	var req request.DisableUserReq
+// @Router /auth/delete [patch]
+func (c AuthController) SoftDeleteUser(ctx *gin.Context) {
+	var req request.SoftDeleteUserReq
 
 	if err := ctx.ShouldBind(&req); err != nil {
 		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
@@ -243,17 +243,10 @@ func (c AuthController) DisableUser(ctx *gin.Context) {
 		return
 	}
 
-	isDisabled, err := c.disableUserUC.Execute(id, req.Password)
+	err := c.softDeleteUserUC.Execute(id, req.Password)
 	if err != nil {
 		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
 			Message: err.Error(),
-		})
-		return
-	}
-
-	if !isDisabled {
-		response.SendError(ctx, http.StatusInternalServerError, &response.GenericError{
-			Message: "the request could not be processed",
 		})
 		return
 	}

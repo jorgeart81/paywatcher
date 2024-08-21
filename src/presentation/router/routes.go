@@ -32,20 +32,24 @@ func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
 
 	userController := ar.authController
 	{
-		api.POST("/register", userController.Register)
-		api.POST("/login", userController.Login)
-		api.POST("/refresh-token", userController.RefreshToken)
+		// Open routes
+		auth := api.Group("auth/")
+		auth.POST("register", userController.Register)
+		auth.POST("login", userController.Login)
+		auth.POST("refresh-token", userController.RefreshToken)
 	}
 
 	{
+		// Auth routes
 		authMiddleware := middlewares.NewAuthMiddleware(ar.authService)
 		authorized := api.Group("/")
 		authorized.Use(authMiddleware.AuthRequired())
 
-		authorized.GET("/test-auth", userController.Index)
-		authorized.PUT("/change-password", userController.ChangePassword)
-		authorized.GET("/logout", userController.Logout)
-		authorized.PUT("/disable-user", userController.DisableUser)
+		auth := authorized.Group("auth/")
+		auth.GET("test-auth", userController.Index)
+		auth.PATCH("change-password", userController.ChangePassword)
+		auth.GET("logout", userController.Logout)
+		auth.PATCH("delete", userController.SoftDeleteUser)
 	}
 
 	// use ginSwagger middleware to serve the API docs

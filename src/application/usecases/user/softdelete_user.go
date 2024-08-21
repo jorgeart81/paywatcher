@@ -8,40 +8,38 @@ import (
 	"github.com/google/uuid"
 )
 
-type DisableUserUseCase struct {
+type SoftDeleteUserUseCase struct {
 	userRepo    repositories.UserRepository
 	hashService services.HashService
 }
 
-func NewDisableUserUseCase(userRepo repositories.UserRepository, hashService services.HashService) DisableUserUseCase {
-	return DisableUserUseCase{
+func NewSoftDeleteUserUseCase(userRepo repositories.UserRepository, hashService services.HashService) SoftDeleteUserUseCase {
+	return SoftDeleteUserUseCase{
 		userRepo:    userRepo,
 		hashService: hashService,
 	}
 }
 
-func (uc *DisableUserUseCase) Execute(id uuid.UUID, password string) (bool, error) {
+func (uc *SoftDeleteUserUseCase) Execute(id uuid.UUID, password string) error {
 	repo := uc.userRepo
 	hashService := uc.hashService
 
 	user, err := repo.GetUserById(id)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	if !user.Active {
-		return false, errors.New("invalid credentials")
+		return errors.New("invalid credentials")
 	}
 	// Confirm with password
 	if err := hashService.Compare(user.Password, password); err != nil {
-		return false, errors.New("invalid credentials")
+		return errors.New("invalid credentials")
 	}
-	// Change status to inactive
-	user.Active = false
-	userDB, err := repo.Update(id, *user)
+	err = repo.SoftDelete(user.ID)
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	return !userDB.Active, nil
+	return nil
 }

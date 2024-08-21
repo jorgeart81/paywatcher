@@ -86,6 +86,6 @@ func (u *ChangePasswordReq) ValidatePassword() error {
 	return validatePassword(u.NewPassword)
 }
 
-type DisableUserReq struct {
+type SoftDeleteUserReq struct {
 	Password string `form:"password" json:"password" binding:"required"`
 }

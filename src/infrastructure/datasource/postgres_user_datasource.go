@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"paywatcher/src/domain/entity"
 	"paywatcher/src/infrastructure/database/schemas"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -68,14 +69,14 @@ func (pu *PostgresUserDatasrc) GetUserByEmail(email string) (*entity.UserEnt, er
 }
 
 // Save implements userdomain.UserDatasource.
-func (pu *PostgresUserDatasrc) Update(id uuid.UUID, user entity.UserEnt) (*entity.UserEnt, error) {
+func (pu *PostgresUserDatasrc) Update(user entity.UserEnt) (*entity.UserEnt, error) {
 	db := pu.DB
 	userSchema := schemas.User{}
 	entityToUserSchema := schemas.ToUserSchema(&user)
 
 	if err := db.Model(&userSchema).
 		Clauses(clause.Returning{}).
-		Where("id = ?", id).
+		Where("id = ?", user.ID).
 		Select("username", "email", "password", "role", "active").
 		Updates(entityToUserSchema).Error; err != nil {
 		if errors.Is(err, gorm.ErrRegistered) {
@@ -84,6 +85,30 @@ func (pu *PostgresUserDatasrc) Update(id uuid.UUID, user entity.UserEnt) (*entit
 		return nil, err
 	}
 
-	userSchema.ID = id
+	userSchema.ID = user.ID
 	return userSchema.ToDomain(), nil
+}
+
+// SoftDelete implements datasource.UserDS.
+func (pu *PostgresUserDatasrc) SoftDelete(id uuid.UUID) error {
+	db := pu.DB
+	now := time.Now()
+	userSchema := schemas.User{}
+
+	if err := db.Model(&userSchema).
+		Clauses(clause.Returning{}).
+		Where("id = ?", id).
+		Select("active", "deleted_at").
+		Updates(schemas.User{Active: false, DeletedAt: &now}).Error; err != nil {
+		if errors.Is(err, gorm.ErrRegistered) {
+			return fmt.Errorf("user could not be updated")
+		}
+		return err
+	}
+
+	if userSchema.DeletedAt == nil && userSchema.Active {
+		return fmt.Errorf("user could not be updated")
+	}
+
+	return nil
 }
