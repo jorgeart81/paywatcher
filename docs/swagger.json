@@ -4,8 +4,8 @@
         "contact": {}
     },
     "paths": {
-        "/change-password": {
-            "put": {
+        "/auth/change-password": {
+            "patch": {
                 "description": "Change a new password",
                 "consumes": [
                     "application/json"
@@ -14,7 +14,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Change Password",
                 "parameters": [
@@ -50,9 +50,9 @@
                 }
             }
         },
-        "/disable-user": {
-            "put": {
-                "description": "Change a new password",
+        "/auth/delete": {
+            "patch": {
+                "description": "Soft delete of user account",
                 "consumes": [
                     "application/json"
                 ],
@@ -60,9 +60,9 @@
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
-                "summary": "Change Password",
+                "summary": "Soft Delete",
                 "parameters": [
                     {
                         "description": "Request body",
@@ -70,7 +70,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.DisableUserReq"
+                            "$ref": "#/definitions/request.SoftDeleteUserReq"
                         }
                     }
                 ],
@@ -93,7 +93,7 @@
                 }
             }
         },
-        "/login": {
+        "/auth/login": {
             "post": {
                 "description": "User login with email and password",
                 "consumes": [
@@ -103,9 +103,9 @@
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
-                "summary": "Login user",
+                "summary": "Login",
                 "parameters": [
                     {
                         "description": "Request body",
@@ -139,14 +139,14 @@
                 }
             }
         },
-        "/logout": {
+        "/auth/logout": {
             "get": {
                 "description": "Log out of user account",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Logout",
                 "responses": {
@@ -162,14 +162,14 @@
                 }
             }
         },
-        "/refresh-token": {
+        "/auth/refresh-token": {
             "post": {
                 "description": "Create a new refresh token",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Refresh Token",
                 "responses": {
@@ -194,7 +194,7 @@
                 }
             }
         },
-        "/register": {
+        "/auth/register": {
             "post": {
                 "description": "Register a new user",
                 "consumes": [
@@ -204,7 +204,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Register user",
                 "parameters": [
@@ -251,17 +251,6 @@
                 }
             }
         },
-        "request.DisableUserReq": {
-            "type": "object",
-            "required": [
-                "password"
-            ],
-            "properties": {
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
         "request.LoginUserReq": {
             "type": "object",
             "required": [
@@ -298,6 +287,17 @@
                     }
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.SoftDeleteUserReq": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "password": {
                     "type": "string"
                 }
             }

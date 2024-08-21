@@ -9,13 +9,6 @@ definitions:
     - currentPassword
     - newPassword
     type: object
-  request.DisableUserReq:
-    properties:
-      password:
-        type: string
-    required:
-    - password
-    type: object
   request.LoginUserReq:
     properties:
       email:
@@ -42,6 +35,13 @@ definitions:
     - email
     - password
     - username
+    type: object
+  request.SoftDeleteUserReq:
+    properties:
+      password:
+        type: string
+    required:
+    - password
     type: object
   response.AuthResponse:
     properties:
@@ -89,8 +89,8 @@ definitions:
 info:
   contact: {}
 paths:
-  /change-password:
-    put:
+  /auth/change-password:
+    patch:
       consumes:
       - application/json
       description: Change a new password
@@ -118,19 +118,19 @@ paths:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Change Password
       tags:
-      - User
-  /disable-user:
-    put:
+      - Auth
+  /auth/delete:
+    patch:
       consumes:
       - application/json
-      description: Change a new password
+      description: Soft delete of user account
       parameters:
       - description: Request body
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/request.DisableUserReq'
+          $ref: '#/definitions/request.SoftDeleteUserReq'
       produces:
       - application/json
       responses:
@@ -144,10 +144,10 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      summary: Change Password
+      summary: Soft Delete
       tags:
-      - User
-  /login:
+      - Auth
+  /auth/login:
     post:
       consumes:
       - application/json
@@ -174,10 +174,10 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      summary: Login user
+      summary: Login
       tags:
-      - User
-  /logout:
+      - Auth
+  /auth/logout:
     get:
       description: Log out of user account
       produces:
@@ -191,8 +191,8 @@ paths:
             $ref: '#/definitions/response.GenericError'
       summary: Logout
       tags:
-      - User
-  /refresh-token:
+      - Auth
+  /auth/refresh-token:
     post:
       description: Create a new refresh token
       produces:
@@ -212,8 +212,8 @@ paths:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Refresh Token
       tags:
-      - User
-  /register:
+      - Auth
+  /auth/register:
     post:
       consumes:
       - application/json
@@ -238,5 +238,5 @@ paths:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Register user
       tags:
-      - User
+      - Auth
 swagger: "2.0"

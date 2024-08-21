@@ -15,8 +15,8 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/change-password": {
-            "put": {
+        "/auth/change-password": {
+            "patch": {
                 "description": "Change a new password",
                 "consumes": [
                     "application/json"
@@ -25,7 +25,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Change Password",
                 "parameters": [
@@ -61,9 +61,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/disable-user": {
-            "put": {
-                "description": "Change a new password",
+        "/auth/delete": {
+            "patch": {
+                "description": "Soft delete of user account",
                 "consumes": [
                     "application/json"
                 ],
@@ -71,9 +71,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
-                "summary": "Change Password",
+                "summary": "Soft Delete",
                 "parameters": [
                     {
                         "description": "Request body",
@@ -81,7 +81,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.DisableUserReq"
+                            "$ref": "#/definitions/request.SoftDeleteUserReq"
                         }
                     }
                 ],
@@ -104,7 +104,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/login": {
+        "/auth/login": {
             "post": {
                 "description": "User login with email and password",
                 "consumes": [
@@ -114,9 +114,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
-                "summary": "Login user",
+                "summary": "Login",
                 "parameters": [
                     {
                         "description": "Request body",
@@ -150,14 +150,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/logout": {
+        "/auth/logout": {
             "get": {
                 "description": "Log out of user account",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Logout",
                 "responses": {
@@ -173,14 +173,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/refresh-token": {
+        "/auth/refresh-token": {
             "post": {
                 "description": "Create a new refresh token",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Refresh Token",
                 "responses": {
@@ -205,7 +205,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/register": {
+        "/auth/register": {
             "post": {
                 "description": "Register a new user",
                 "consumes": [
@@ -215,7 +215,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Register user",
                 "parameters": [
@@ -262,17 +262,6 @@ const docTemplate = `{
                 }
             }
         },
-        "request.DisableUserReq": {
-            "type": "object",
-            "required": [
-                "password"
-            ],
-            "properties": {
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
         "request.LoginUserReq": {
             "type": "object",
             "required": [
@@ -309,6 +298,17 @@ const docTemplate = `{
                     }
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.SoftDeleteUserReq": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "password": {
                     "type": "string"
                 }
             }
