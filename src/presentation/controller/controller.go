@@ -10,20 +10,24 @@ import (
 )
 
 var (
-	userController *AuthController
+	authController     *AuthController
+	categoryController *CategoryController
 )
 
 type Controller struct {
-	User *AuthController
+	Auth     *AuthController
+	Category *CategoryController
 }
 
 func InitializeController(db *gorm.DB) {
-	userController = initAuthController(db)
+	authController = initAuthController(db)
+	categoryController = initCategoryController(db)
 }
 
 func GetControllers() *Controller {
 	return &Controller{
-		User: userController,
+		Auth:     authController,
+		Category: categoryController,
 	}
 }
 
@@ -42,4 +46,11 @@ func initAuthController(db *gorm.DB) *AuthController {
 
 	// Create and return the controller
 	return newAuthController(createUserUC, loginUserUC, refreshTokenUC, changePasswordUC, disableUserUC)
+}
+
+func initCategoryController(db *gorm.DB) *CategoryController {
+	// categoryDatasource := &datasource.PostgresCategoryDatasrc{DB: db}
+	// categoryRepositoryImpl := repositories.NewcCategoryRepository(categoryDatasource)
+
+	return newCategoryController()
 }

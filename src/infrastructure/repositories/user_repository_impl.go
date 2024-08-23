@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// var _ userdomain.UserRepository = &UserRepositoryImpl{}
+// var _ repositories.UserRepository = &UserRepositoryImpl{}
 
 type UserRepositoryImpl struct {
 	Datasource datasource.UserDS
