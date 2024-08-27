@@ -18,7 +18,7 @@ type User struct {
 	UpdatedAt time.Time  `gorm:"column:updated_at"`
 	DeletedAt *time.Time `gorm:"column:deleted_at"`
 
-	Categories []Category `gorm:"foreignKey:UserID"`
+	Categories []Category `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 func ToUserSchema(user *entity.UserEnt) *User {

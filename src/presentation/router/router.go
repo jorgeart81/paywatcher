@@ -30,8 +30,9 @@ func Initialize(port int, host string, ginMode string, db *gorm.DB, corsAllowOri
 	controllers := controller.GetControllers()
 
 	routes := &appRoutes{
-		authController: controllers.Auth,
-		authService:    services.JWTAuthService(),
+		authController:     controllers.Auth,
+		authService:        services.JWTAuthService(),
+		categoryController: controllers.Category,
 	}
 	routes.initializeRoutes(router)
 

@@ -13,8 +13,9 @@ import (
 )
 
 type appRoutes struct {
-	authService    services.Authenticator
-	authController *controller.AuthController
+	authService        services.Authenticator
+	authController     *controller.AuthController
+	categoryController *controller.CategoryController
 }
 
 func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
@@ -31,6 +32,7 @@ func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
 	api := router.Group(basePath)
 
 	userController := ar.authController
+	categoryController := ar.categoryController
 	{
 		// Open routes
 		auth := api.Group("auth/")
@@ -50,6 +52,9 @@ func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
 		auth.PATCH("change-password", userController.ChangePassword)
 		auth.GET("logout", userController.Logout)
 		auth.PATCH("delete", userController.SoftDeleteUser)
+
+		category := authorized.Group("category/")
+		category.POST("", categoryController.Create)
 	}
 
 	// use ginSwagger middleware to serve the API docs

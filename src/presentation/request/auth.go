@@ -7,7 +7,7 @@ import (
 )
 
 type RegisterUserReq struct {
-	Email    string   `form:"email" json:"email" binding:"email,required"`
+	Email    string   `form:"email" json:"email" binding:"required"`
 	Username string   `form:"usename" json:"username" binding:"required"`
 	Password string   `form:"password" json:"password" binding:"required"`
 	Role     []string `form:"role" json:"role,omitempty"`
