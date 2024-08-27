@@ -1,7 +1,11 @@
 package repositories
 
-import "paywatcher/src/domain/entity"
+import (
+	"paywatcher/src/domain/entity"
+
+	"github.com/google/uuid"
+)
 
 type CategoryRepository interface {
-	Save(user entity.CategoryEnt) (*entity.CategoryEnt, error)
+	Save(category entity.CategoryEnt, userID uuid.UUID) (*entity.CategoryEnt, error)
 }
