@@ -1,6 +1,7 @@
 package schemas
 
 import (
+	"paywatcher/src/domain/entity"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,4 +17,24 @@ type Category struct {
 	UpdatedAt time.Time `gorm:"column:updated_at"`
 
 	UserID uuid.UUID `gorm:"type:uuid"`
+}
+
+func ToCategorySchema(category *entity.CategoryEnt) *Category {
+	return &Category{
+		ID:        category.ID,
+		Name:      category.Name,
+		Priority:  category.Priority,
+		Recurrent: category.Recurrent,
+		Notify:    category.Notify,
+	}
+}
+
+func (e *Category) ToDomain() *entity.CategoryEnt {
+	return &entity.CategoryEnt{
+		ID:        e.ID,
+		Name:      e.Name,
+		Priority:  e.Priority,
+		Recurrent: e.Recurrent,
+		Notify:    e.Notify,
+	}
 }
