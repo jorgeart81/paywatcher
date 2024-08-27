@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"paywatcher/src/application/usecases/category"
 	"paywatcher/src/application/usecases/user"
 	"paywatcher/src/infrastructure/datasource"
 	"paywatcher/src/infrastructure/repositories"
@@ -49,8 +50,10 @@ func initAuthController(db *gorm.DB) *AuthController {
 }
 
 func initCategoryController(db *gorm.DB) *CategoryController {
-	// categoryDatasource := &datasource.PostgresCategoryDatasrc{DB: db}
-	// categoryRepositoryImpl := repositories.NewcCategoryRepository(categoryDatasource)
+	categoryDatasource := &datasource.PostgresCategoryDatasrc{DB: db}
+	categoryRepositoryImpl := repositories.NewcCategoryRepository(categoryDatasource)
 
-	return newCategoryController()
+	createCategoryUC := category.NewCreateCategoryUseCase(categoryRepositoryImpl)
+
+	return newCategoryController(createCategoryUC)
 }
