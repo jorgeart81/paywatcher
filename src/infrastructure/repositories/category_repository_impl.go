@@ -3,6 +3,8 @@ package repositories
 import (
 	"paywatcher/src/domain/datasource"
 	"paywatcher/src/domain/entity"
+
+	"github.com/google/uuid"
 )
 
 // var _ repositories.CategoryRepository = &CategoryRepositoryImpl{}
@@ -23,6 +25,6 @@ func NewcCategoryRepository(datasource datasource.CategoryDS) *CategoryRepositor
 }
 
 // Save implements repositories.CategoryRepository.
-func (c *CategoryRepositoryImpl) Save(user entity.CategoryEnt) (*entity.CategoryEnt, error) {
-	panic("unimplemented")
+func (c *CategoryRepositoryImpl) Save(cagegory entity.CategoryEnt, userID uuid.UUID) (*entity.CategoryEnt, error) {
+	return c.Datasource.Save(cagegory, userID)
 }
