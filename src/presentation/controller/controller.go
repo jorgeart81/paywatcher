@@ -54,6 +54,7 @@ func initCategoryController(db *gorm.DB) *CategoryController {
 	categoryRepositoryImpl := repositories.NewcCategoryRepository(categoryDatasource)
 
 	createCategoryUC := category.NewCreateCategoryUseCase(categoryRepositoryImpl)
+	userCategoriesUC := category.NewUserCategoriesUseCase(categoryRepositoryImpl)
 
-	return newCategoryController(createCategoryUC)
+	return newCategoryController(createCategoryUC, userCategoriesUC)
 }

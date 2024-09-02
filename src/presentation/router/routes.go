@@ -53,8 +53,9 @@ func (ar *appRoutes) initializeRoutes(router *gin.Engine) {
 		auth.GET("logout", userController.Logout)
 		auth.PATCH("delete", userController.SoftDeleteUser)
 
-		category := authorized.Group("category/")
-		category.POST("", categoryController.Create)
+		category := authorized.Group("categories/")
+		category.POST("create", categoryController.Create)
+		category.GET("all", categoryController.GetUserCategories)
 	}
 
 	// use ginSwagger middleware to serve the API docs

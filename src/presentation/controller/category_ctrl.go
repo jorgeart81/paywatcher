@@ -12,12 +12,14 @@ import (
 )
 
 type CategoryController struct {
-	createUC *category.CreateCategoryUseCase
+	createUC         *category.CreateCategoryUseCase
+	userCategoriesUC *category.UserCategoriesUseCase
 }
 
-func newCategoryController(createUC category.CreateCategoryUseCase) *CategoryController {
+func newCategoryController(createUC category.CreateCategoryUseCase, userCategoriesUC category.UserCategoriesUseCase) *CategoryController {
 	return &CategoryController{
-		createUC: &createUC,
+		createUC:         &createUC,
+		userCategoriesUC: &userCategoriesUC,
 	}
 }
 
@@ -49,4 +51,29 @@ func (c CategoryController) Create(ctx *gin.Context) {
 
 	reponse := response.NewCategoryResponse(newCategory)
 	response.SendSuccess(ctx, http.StatusCreated, reponse)
+}
+
+func (c CategoryController) GetUserCategories(ctx *gin.Context) {
+	id, ok := ctx.Value(middlewares.UserIDKey).(uuid.UUID)
+	if !ok {
+		response.SendError(ctx, http.StatusInternalServerError, &response.GenericError{
+			Message: "user not found",
+		})
+		return
+	}
+
+	categories, err := c.userCategoriesUC.Execute(id)
+	if err != nil {
+		response.SendError(ctx, http.StatusBadRequest, &response.GenericError{
+			Message: err.Error(),
+		})
+	}
+
+	var categoriesReponse []response.CategoryResponse
+
+	for _, category := range *categories {
+		categoriesReponse = append(categoriesReponse, response.NewCategoryResponse(&category))
+	}
+
+	response.SendSuccess(ctx, http.StatusOK, categoriesReponse)
 }
