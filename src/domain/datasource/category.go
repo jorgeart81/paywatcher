@@ -8,4 +8,5 @@ import (
 
 type CategoryDS interface {
 	Save(category entity.CategoryEnt, userID uuid.UUID) (*entity.CategoryEnt, error)
+	GetCategories(userID uuid.UUID) (*[]entity.CategoryEnt, error)
 }
