@@ -28,3 +28,8 @@ func NewcCategoryRepository(datasource datasource.CategoryDS) *CategoryRepositor
 func (c *CategoryRepositoryImpl) Save(cagegory entity.CategoryEnt, userID uuid.UUID) (*entity.CategoryEnt, error) {
 	return c.Datasource.Save(cagegory, userID)
 }
+
+// GetCategories implements repositories.CategoryRepository.
+func (c *CategoryRepositoryImpl) GetCategories(userID uuid.UUID) (*[]entity.CategoryEnt, error) {
+	return c.Datasource.GetCategories(userID)
+}
