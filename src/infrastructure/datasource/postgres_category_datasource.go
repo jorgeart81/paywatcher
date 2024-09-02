@@ -34,3 +34,21 @@ func (p *PostgresCategoryDatasrc) Save(category entity.CategoryEnt, userID uuid.
 	}
 	return categorySchema.ToDomain(), nil
 }
+
+// GetCategories implements datasource.CategoryDS.
+func (p *PostgresCategoryDatasrc) GetCategories(userID uuid.UUID) (*[]entity.CategoryEnt, error) {
+	db := p.DB
+	var user schemas.User
+	var categories []entity.CategoryEnt
+
+	if err := db.Preload("Categories").First(&user, userID).Error; err != nil {
+		return nil, err
+	}
+
+	for _, category := range user.Categories {
+		fmt.Println(category.ToDomain())
+		categories = append(categories, *category.ToDomain())
+	}
+
+	return &categories, nil
+}
