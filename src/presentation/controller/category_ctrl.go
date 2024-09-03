@@ -23,6 +23,17 @@ func newCategoryController(createUC category.CreateCategoryUseCase, userCategori
 	}
 }
 
+// @BasePath /api
+
+// @Summary Create category
+// @Description Create new category by user
+// @Tags Categories
+// @Accept json
+// @Produce json
+// @Param request body request.CreateCategoryReq true "Request body"
+// @Success 201 {object} response.CategoryResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /categories/create [post]
 func (c CategoryController) Create(ctx *gin.Context) {
 	var req request.CreateCategoryReq
 
@@ -53,6 +64,14 @@ func (c CategoryController) Create(ctx *gin.Context) {
 	response.SendSuccess(ctx, http.StatusCreated, reponse)
 }
 
+// @Summary Get all user categories
+// @Description Get the user's categories
+// @Tags Categories
+// @Accept json
+// @Produce json
+// @Success 200 {object} []response.CategoryResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /categories/all [get]
 func (c CategoryController) GetUserCategories(ctx *gin.Context) {
 	id, ok := ctx.Value(middlewares.UserIDKey).(uuid.UUID)
 	if !ok {

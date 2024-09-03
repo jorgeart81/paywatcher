@@ -9,6 +9,19 @@ definitions:
     - currentPassword
     - newPassword
     type: object
+  request.CreateCategoryReq:
+    properties:
+      name:
+        type: string
+      notify:
+        type: boolean
+      priority:
+        type: integer
+      recurrent:
+        type: boolean
+    required:
+    - name
+    type: object
   request.LoginUserReq:
     properties:
       email:
@@ -56,6 +69,19 @@ definitions:
       tokens: {}
       username:
         type: string
+    type: object
+  response.CategoryResponse:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      notify:
+        type: boolean
+      priority:
+        type: integer
+      recurrent:
+        type: boolean
     type: object
   response.ErrorResponse:
     properties:
@@ -239,4 +265,51 @@ paths:
       summary: Register user
       tags:
       - Auth
+  /categories/all:
+    get:
+      consumes:
+      - application/json
+      description: Get the user's categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.CategoryResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get all user categories
+      tags:
+      - Categories
+  /categories/create:
+    post:
+      consumes:
+      - application/json
+      description: Create new category by user
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateCategoryReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.CategoryResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create category
+      tags:
+      - Categories
 swagger: "2.0"
