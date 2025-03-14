@@ -38,8 +38,9 @@ func (uc *LoginUserUseCase) Execute(email, password string) (*entity.UserEnt, se
 	}
 
 	jwtUser := services.AuthUser{
-		ID:       user.ID,
-		Username: user.Username,
+		ID:            user.ID,
+		Username:      user.Username,
+		SecurityStamp: user.SecurityStamp,
 	}
 
 	tokenPairs, err := uc.auth.GenerateTokenPair(&jwtUser)

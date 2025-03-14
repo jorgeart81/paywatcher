@@ -31,8 +31,9 @@ func JWTAuthService() *JWTAuth {
 }
 
 type jwtClaims struct {
-	Username string    `json:"username"`
-	ID       uuid.UUID `json:"sub"`
+	Username      string    `json:"username"`
+	ID            uuid.UUID `json:"sub"`
+	SecurityStamp string    `json:"securityStamp"`
 	jwt.RegisteredClaims
 }
 
@@ -40,13 +41,14 @@ func (a *JWTAuth) GenerateTokenPair(user *services.AuthUser) (services.TokenPair
 	now := time.Now().UTC()
 	// Create a token
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": user.Username,
-		"sub":      user.ID,
-		"aud":      a.jwtAudience,
-		"iss":      a.jwtIssuer,
-		"iat":      now.Unix(),
-		"type":     "JWT",
-		"exp":      now.Add(a.jwtExpiry).Unix(),
+		"username":      user.Username,
+		"sub":           user.ID,
+		"aud":           a.jwtAudience,
+		"iss":           a.jwtIssuer,
+		"iat":           now.Unix(),
+		"type":          "JWT",
+		"securityStamp": user.SecurityStamp,
+		"exp":           now.Add(a.jwtExpiry).Unix(),
 	})
 
 	// Create a signed token

@@ -7,13 +7,14 @@ import (
 )
 
 type UserEnt struct {
-	ID        uuid.UUID  `json:"id"`
-	Email     string     `json:"email"`
-	Username  string     `json:"username"`
-	Password  string     `json:"password"`
-	Role      []string   `json:"role"`
-	Active    bool       `json:"active"`
-	DeletedAt *time.Time `json:"deletedAt"`
+	ID            uuid.UUID  `json:"id"`
+	Email         string     `json:"email"`
+	Username      string     `json:"username"`
+	Password      string     `json:"password"`
+	Role          []string   `json:"role"`
+	Active        bool       `json:"active"`
+	SecurityStamp string     `gorm:"column:security_stamp"`
+	DeletedAt     *time.Time `json:"deletedAt"`
 }
 
 const (

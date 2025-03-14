@@ -36,8 +36,9 @@ func (r *RefreshTokenUseCase) Execute(refreshToken string) (services.TokenPairs,
 	}
 
 	jwtUser := services.AuthUser{
-		ID:       user.ID,
-		Username: user.Username,
+		ID:            user.ID,
+		Username:      user.Username,
+		SecurityStamp: user.SecurityStamp,
 	}
 
 	tokenPairs, err := auth.GenerateTokenPair(&jwtUser)

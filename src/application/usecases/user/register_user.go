@@ -4,6 +4,8 @@ import (
 	"paywatcher/src/domain/entity"
 	"paywatcher/src/domain/repositories"
 	"paywatcher/src/domain/services"
+
+	"github.com/google/uuid"
 )
 
 type RegisterUserUseCase struct {
@@ -29,6 +31,7 @@ func (uc *RegisterUserUseCase) Execute(user *entity.UserEnt) (*entity.UserEnt, s
 		return nil, services.TokenPairs{}, err
 	}
 	user.Password = hashedPassword
+	user.SecurityStamp = uuid.New().String()
 
 	// Save user
 	newUser, err := repo.Save(*user.NewUser())
@@ -37,8 +40,9 @@ func (uc *RegisterUserUseCase) Execute(user *entity.UserEnt) (*entity.UserEnt, s
 	}
 
 	jwtUser := services.AuthUser{
-		ID:       newUser.ID,
-		Username: newUser.Username,
+		ID:            newUser.ID,
+		Username:      newUser.Username,
+		SecurityStamp: newUser.SecurityStamp,
 	}
 
 	tokenPairs, err := uc.auth.GenerateTokenPair(&jwtUser)

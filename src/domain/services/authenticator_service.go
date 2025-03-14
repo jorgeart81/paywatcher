@@ -5,8 +5,9 @@ import (
 )
 
 type AuthUser struct {
-	ID       uuid.UUID `json:"id"`
-	Username string    `json:"username"`
+	ID            uuid.UUID `json:"id"`
+	Username      string    `json:"username"`
+	SecurityStamp string    `json:"securityStamp"`
 }
 
 type TokenPairs struct {
@@ -15,8 +16,9 @@ type TokenPairs struct {
 }
 
 type Claims struct {
-	Username string
-	ID       uuid.UUID
+	Username      string
+	ID            uuid.UUID
+	SecurityStamp string
 }
 
 type Authenticator interface {
