@@ -8,42 +8,45 @@ import (
 )
 
 type User struct {
-	ID            uuid.UUID  `json:"id" gorm:"primaryKey;type:uuid"`
-	Email         string     `gorm:"column:email;unique;not null"`
-	Username      string     `gorm:"column:username"`
-	Password      string     `gorm:"column:password"`
-	Role          []string   `gorm:"column:role;serializer:json"`
-	Active        bool       `gorm:"column:active;default:true"`
-	SecurityStamp string     `gorm:"column:security_stamp"`
-	CreatedAt     time.Time  `gorm:"column:created_at"`
-	UpdatedAt     time.Time  `gorm:"column:updated_at"`
-	DeletedAt     *time.Time `gorm:"column:deleted_at"`
+	ID              uuid.UUID  `json:"id" gorm:"primaryKey;type:uuid"`
+	Email           string     `gorm:"column:email;unique;not null"`
+	NormalizedEmail string     `gorm:"column:normalized_email;unique"`
+	Username        string     `gorm:"column:username"`
+	Password        string     `gorm:"column:password"`
+	Role            []string   `gorm:"column:role;serializer:json"`
+	Active          bool       `gorm:"column:active;default:true"`
+	SecurityStamp   string     `gorm:"column:security_stamp"`
+	CreatedAt       time.Time  `gorm:"column:created_at"`
+	UpdatedAt       time.Time  `gorm:"column:updated_at"`
+	DeletedAt       *time.Time `gorm:"column:deleted_at"`
 
 	Categories []Category `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 func ToUserSchema(user *entity.UserEnt) *User {
 	return &User{
-		ID:            user.ID,
-		Username:      user.Username,
-		Email:         user.Email,
-		Password:      user.Password,
-		Role:          user.Role,
-		Active:        user.Active,
-		SecurityStamp: user.SecurityStamp,
-		DeletedAt:     user.DeletedAt,
+		ID:              user.ID,
+		Email:           user.Email,
+		NormalizedEmail: user.NormalizedEmail,
+		Username:        user.Username,
+		Password:        user.Password,
+		Role:            user.Role,
+		Active:          user.Active,
+		SecurityStamp:   user.SecurityStamp,
+		DeletedAt:       user.DeletedAt,
 	}
 }
 
 func (e *User) ToDomain() *entity.UserEnt {
 	return &entity.UserEnt{
-		ID:            e.ID,
-		Username:      e.Username,
-		Email:         e.Email,
-		Password:      e.Password,
-		Role:          e.Role,
-		Active:        e.Active,
-		SecurityStamp: e.SecurityStamp,
-		DeletedAt:     e.DeletedAt,
+		ID:              e.ID,
+		Email:           e.Email,
+		NormalizedEmail: e.NormalizedEmail,
+		Username:        e.Username,
+		Password:        e.Password,
+		Role:            e.Role,
+		Active:          e.Active,
+		SecurityStamp:   e.SecurityStamp,
+		DeletedAt:       e.DeletedAt,
 	}
 }
